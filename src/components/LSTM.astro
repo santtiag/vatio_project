@@ -17,9 +17,9 @@ const objetivos = [
 
 <section id="modelo" class="border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Inteligencia predictiva</p>
-    <h2 class="reveal mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-      Modelo predictivo <span class="text-gradient">LSTM</span>
+    <p class="reveal kicker">Forecast Engine</p>
+    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+      Modelo predictivo <span class="text-signal glow">LSTM</span>
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
       Una red neuronal recurrente de 7 capas que recuerda el pasado para anticipar el
@@ -43,15 +43,15 @@ const objetivos = [
     </figure>
 
     <div class="reveal mt-12">
-      <p class="mb-3 text-sm font-medium text-muted">Arquitectura — 7 capas</p>
+      <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Arquitectura — 7 capas</p>
       <div class="flex flex-wrap items-center gap-2" data-stagger>
         {
           layers.map((l, i) => (
             <>
-              <span class="reveal rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm font-medium transition hover:border-indigo hover:bg-indigo-soft">
+              <span class="reveal mono rounded border border-line bg-surface-2 px-3 py-2 text-xs font-medium uppercase tracking-wide transition hover:border-signal hover:text-signal">
                 {l}
               </span>
-              {i < layers.length - 1 && <span class="text-indigo">→</span>}
+              {i < layers.length - 1 && <span class="text-signal">→</span>}
             </>
           ))
         }
@@ -60,26 +60,26 @@ const objetivos = [
 
     <div class="mt-14 grid gap-8 lg:grid-cols-2">
       <div class="reveal">
-        <p class="mb-3 text-sm font-medium text-muted">Features de entrada — 5 parámetros</p>
+        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Features de entrada — 5 parámetros</p>
         <ul class="space-y-2" data-stagger>
           {
             features.map((f) => (
-              <li class="reveal card-lift flex items-center justify-between rounded-lg border border-line bg-surface px-4 py-2.5 shadow-soft">
+              <li class="reveal card-lift instrument flex items-center justify-between px-4 py-2.5 shadow-soft">
                 <span class="text-sm font-medium">{f.n}</span>
-                <span class="font-mono text-xs text-indigo">{f.u}</span>
+                <span class="font-mono text-xs text-signal">{f.u}</span>
               </li>
             ))
           }
         </ul>
       </div>
       <div class="reveal">
-        <p class="mb-3 text-sm font-medium text-muted">Métricas objetivo del modelo</p>
+        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Métricas objetivo del modelo</p>
         <div class="grid grid-cols-2 gap-3" data-stagger>
           {
             objetivos.map((o) => (
-              <div class="reveal card-lift rounded-lg border border-line bg-surface p-4 shadow-soft">
-                <p class="text-2xl font-semibold text-indigo">{o.v}</p>
-                <p class="mt-1 text-xs text-muted">{o.m}</p>
+              <div class="reveal card-lift instrument p-4 shadow-soft">
+                <p class="mono tnum text-2xl font-medium text-signal">{o.v}</p>
+                <p class="mono mt-1 text-[11px] uppercase tracking-wider text-muted">{o.m}</p>
               </div>
             ))
           }
@@ -87,8 +87,8 @@ const objetivos = [
       </div>
     </div>
 
-    <div class="reveal mt-12 overflow-hidden rounded-2xl border border-indigo/30 bg-gradient-to-br from-indigo-soft to-surface p-6">
-      <p class="flex items-center gap-2 text-sm font-semibold text-indigo">
+    <div class="reveal mt-12 instrument overflow-hidden border-signal p-6">
+      <p class="mono flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-signal">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
         </svg>
@@ -101,11 +101,11 @@ const objetivos = [
       </p>
     </div>
 
-    <div class="reveal mt-10 rounded-2xl border border-line bg-surface p-6 shadow-soft">
+    <div class="reveal scanline mt-10 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h3 class="font-semibold">Valores reales vs. predichos</h3>
-        <span class="rounded bg-surface-2 px-2 py-0.5 text-xs text-muted">
-          Datos representativos — escala ilustrativa
+        <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
+          Escala ilustrativa
         </span>
       </div>
       <canvas id="chart-lstm" height="110"></canvas>
@@ -116,29 +116,31 @@ const objetivos = [
 <script>
   import Chart from 'chart.js/auto';
   import { realVsPredicted } from '../lib/signals';
-
-  // Tonos neutros que se leen en claro y oscuro (ejes, grilla, leyenda).
-  Chart.defaults.color = '#94a3b8';
-  Chart.defaults.borderColor = 'rgba(148,163,184,0.16)';
+  import { themeColors, onThemeChange } from '../lib/theme';
 
   const { real, pred } = realVsPredicted(48, 5);
   const labels = Array.from({ length: real.length }, (_, i) => `t${i + 1}`);
   const el = document.getElementById('chart-lstm') as HTMLCanvasElement;
+  let chart: Chart | null = null;
 
-  function build() {
-    new Chart(el, {
+  function build(animate = true) {
+    const c = themeColors();
+    Chart.defaults.color = c.muted;
+    Chart.defaults.borderColor = c.gridLine;
+    chart?.destroy();
+    chart = new Chart(el, {
       type: 'line',
       data: {
         labels,
         datasets: [
-          { label: 'Real', data: real, borderColor: '#64748b', borderWidth: 2, pointRadius: 0, tension: 0.3 },
-          { label: 'Predicho', data: pred, borderColor: '#4f46e5', borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.3, fill: { target: '-1', above: 'rgba(79,70,229,0.06)', below: 'rgba(79,70,229,0.06)' } },
+          { label: 'Real', data: real, borderColor: c.muted, borderWidth: 2, pointRadius: 0, tension: 0.3 },
+          { label: 'Predicho', data: pred, borderColor: c.signal, borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.3, fill: { target: '-1', above: c.signal + '14', below: c.signal + '14' } },
         ],
       },
       options: {
         responsive: true,
         interaction: { mode: 'index', intersect: false },
-        animation: { duration: 2000, easing: 'easeInOutQuart' },
+        animation: animate ? { duration: 2000, easing: 'easeInOutQuart' } : false,
         plugins: { legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } } },
         scales: {
           x: { title: { display: true, text: 'Ventana de tiempo (genérica)' }, ticks: { maxTicksLimit: 8 }, grid: { display: false } },
@@ -152,4 +154,6 @@ const objetivos = [
     for (const e of es) if (e.isIntersecting) { build(); io.disconnect(); }
   }, { threshold: 0.3 });
   io.observe(el);
+
+  onThemeChange(() => { if (chart) build(false); });
 </script>

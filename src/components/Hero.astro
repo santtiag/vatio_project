@@ -8,24 +8,29 @@ const metrics = [
 ---
 
 <section class="relative overflow-hidden border-b border-line bg-canvas">
-  <div class="absolute inset-0 bg-grid"></div>
-  <div class="blob -left-24 -top-24 h-80 w-80 bg-indigo-soft"></div>
-  <div class="blob right-0 top-32 h-72 w-72" style="background:#dbeafe; animation-delay:-4s"></div>
-  <div class="blob left-1/3 top-72 h-64 w-64" style="background:#ede9fe; animation-delay:-8s"></div>
+  <div class="graticule absolute inset-0"></div>
 
   <div class="relative mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28">
-    <div class="reveal mb-4 inline-flex items-center gap-2 rounded-full border border-indigo/15 bg-surface/70 px-3 py-1 text-sm font-medium text-indigo backdrop-blur">
-      <span class="pulse-dot h-2 w-2 rounded-full bg-indigo"></span>
-      Proyecto de investigación · Ingeniería de Sistemas · CECAR
+    <!-- Barra de estado tipo instrumento -->
+    <div class="reveal mono flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-widest text-muted">
+      <span class="inline-flex items-center gap-1.5 text-signal">
+        <span class="pulse-dot h-2 w-2 rounded-full bg-signal"></span> REC
+      </span>
+      <span aria-hidden="true" class="text-line">│</span>
+      <span>CH1 · VOLTAGE</span>
+      <span aria-hidden="true" class="text-line">│</span>
+      <span>CECAR · ING. DE SISTEMAS</span>
+      <span aria-hidden="true" class="text-line">│</span>
+      <span>PROYECTO DE INVESTIGACIÓN</span>
     </div>
 
-    <h1 class="reveal max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-6xl">
+    <h1 class="reveal mt-6 max-w-4xl text-4xl font-bold leading-[1.02] tracking-tight text-ink sm:text-6xl">
       Sistema Inteligente de Monitoreo de
-      <span class="text-gradient animate-gradient">Parámetros Eléctricos</span>
+      <span class="text-signal glow">Parámetros Eléctricos</span>
     </h1>
 
-    <p class="reveal mt-5 max-w-2xl text-lg text-muted">
-      Corporación Universitaria del Caribe (CECAR) — Ingeniería de Sistemas
+    <p class="reveal mono mt-4 max-w-2xl text-sm uppercase tracking-wider text-muted">
+      Corporación Universitaria del Caribe (CECAR)
     </p>
 
     <p class="reveal mt-6 max-w-3xl text-base leading-relaxed text-soft">
@@ -38,32 +43,36 @@ const metrics = [
     </p>
 
     <div class="reveal mt-8 flex flex-wrap gap-3 text-sm">
-      <a href="#arquitectura" class="rounded-full bg-indigo px-5 py-2.5 font-medium text-white shadow-soft transition hover:bg-indigo-700 hover:shadow-lift">
-        Explorar la arquitectura
+      <a href="#arquitectura" class="mono rounded-md bg-signal px-5 py-2.5 font-medium uppercase tracking-wide text-canvas shadow-soft transition hover:brightness-110">
+        Explorar la arquitectura →
       </a>
-      <a href="#suavizado" class="rounded-full border border-line bg-surface px-5 py-2.5 font-medium text-ink transition hover:border-indigo hover:text-indigo">
+      <a href="#suavizado" class="mono rounded-md border border-line bg-surface px-5 py-2.5 font-medium uppercase tracking-wide text-ink transition hover:border-signal hover:text-signal">
         Ver los algoritmos
       </a>
     </div>
 
-    <div class="reveal mt-12 overflow-hidden rounded-2xl border border-line bg-surface shadow-lift">
-      <div class="flex items-center justify-between border-b border-line px-4 py-2 text-xs text-muted">
+    <!-- Pantalla del osciloscopio -->
+    <div class="reveal scanline mt-12 overflow-hidden rounded-lg border border-line shadow-lift">
+      <div class="mono flex items-center justify-between border-b border-line bg-surface px-4 py-2 text-[11px] uppercase tracking-wider text-muted">
         <span class="flex items-center gap-2">
-          <span class="h-2 w-2 rounded-full bg-slate-300"></span>
-          Señal de corriente — ruidosa
-          <span class="text-indigo">→</span>
-          suavizada (Whittaker)
+          <span class="text-amber">RAW</span>
+          <span aria-hidden="true">→</span>
+          <span class="text-signal">SMOOTHED · WHITTAKER λ=10</span>
         </span>
-        <span class="rounded bg-surface-2 px-2 py-0.5">Señal sintética · escala ilustrativa</span>
+        <span class="rounded border border-line px-2 py-0.5">SYNTHETIC · ILUSTRATIVA</span>
       </div>
-      <canvas id="hero-wave" class="block w-full" height="220"></canvas>
+      <div class="screen relative">
+        <div class="graticule absolute inset-0"></div>
+        <canvas id="hero-wave" class="relative block w-full" height="220"></canvas>
+      </div>
     </div>
 
-    <dl class="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4" data-stagger>
+    <!-- Fila de readouts -->
+    <dl class="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4" data-stagger>
       {
         metrics.map((m) => (
-          <div class="reveal card-lift rounded-xl border border-line bg-surface p-5 shadow-soft">
-            <dt class="text-3xl font-semibold tracking-tight text-indigo sm:text-4xl">
+          <div class="reveal bg-surface p-5">
+            <dt class="mono tnum text-3xl font-medium tracking-tight text-signal sm:text-4xl">
               <span
                 data-count={m.value}
                 data-prefix={m.prefix}
@@ -72,7 +81,7 @@ const metrics = [
                 {m.prefix}0{m.suffix}
               </span>
             </dt>
-            <dd class="mt-2 text-sm text-muted">{m.label}</dd>
+            <dd class="mono mt-2 text-[11px] uppercase leading-relaxed tracking-wider text-muted">{m.label}</dd>
           </div>
         ))
       }
@@ -90,6 +99,20 @@ const metrics = [
   const clean = smooth(raw, 7);
   const min = Math.min(...raw) - 2;
   const max = Math.max(...raw) + 2;
+
+  // Colores leídos del tema (CSS vars) — se actualizan al alternar tema.
+  let css = { signal: '#34e29b', amber: '#f5b13f', graphite: '#3a4654', dark: true };
+  function readTheme() {
+    const s = getComputedStyle(document.documentElement);
+    css = {
+      signal: s.getPropertyValue('--color-signal').trim() || css.signal,
+      amber: s.getPropertyValue('--color-amber').trim() || css.amber,
+      graphite: s.getPropertyValue('--color-graphite').trim() || css.graphite,
+      dark: document.documentElement.classList.contains('dark'),
+    };
+  }
+  readTheme();
+  window.addEventListener('themechange', readTheme);
 
   function resize() {
     const dpr = window.devicePixelRatio || 1;
@@ -118,15 +141,16 @@ const metrics = [
     ctx.shadowBlur = 0;
   }
 
-  let t = 0; // 0 = ruidosa, 1 = suavizada (oscila)
+  let t = 0; // 0 = cruda, 1 = suavizada (oscila)
   function frame() {
     const w = canvas.clientWidth;
     ctx.clearRect(0, 0, w, 220);
-    // rastro tenue de la señal cruda
-    draw(raw, 'rgba(148,163,184,0.35)', 1);
+    // rastro tenue de la señal cruda (ámbar tenue)
+    draw(raw, css.amber + '55', 1);
     const morphed = raw.map((v, i) => v + (clean[i] - v) * t);
-    const indigo = t > 0.5;
-    draw(morphed, indigo ? '#4f46e5' : '#94a3b8', 2.6, indigo ? 12 : 0);
+    const clean50 = t > 0.5;
+    const color = clean50 ? css.signal : css.amber;
+    draw(morphed, color, 2.6, clean50 && css.dark ? 14 : 0);
     t += 0.006;
     if (t > 1) t = 0;
     requestAnimationFrame(frame);

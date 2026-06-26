@@ -45,8 +45,8 @@ const nodes = [
 
 <section id="arquitectura" class="relative border-b border-line bg-canvas-2">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Cómo funciona</p>
-    <h2 class="reveal mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+    <p class="reveal kicker">Signal Chain</p>
+    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
       Arquitectura del sistema
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
@@ -56,41 +56,44 @@ const nodes = [
       vez bien.
     </p>
 
-    <div class="mt-14 flex flex-wrap items-stretch gap-3" data-stagger>
-      {
-        nodes.map((n, i) => (
-          <>
-            <div class="reveal card-lift group flex w-full flex-1 basis-[220px] flex-col rounded-xl border border-line bg-surface p-4 shadow-soft">
-              <span class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-soft text-indigo transition group-hover:scale-110 group-hover:bg-indigo group-hover:text-white">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="h-5 w-5"
-                >
-                  <path d={n.icon} />
-                </svg>
-              </span>
-              <p class="text-sm font-semibold leading-snug text-ink">{n.name}</p>
-              <p class="mt-1 text-xs leading-relaxed text-muted">{n.desc}</p>
-              <span class="mt-3 text-[10px] font-semibold uppercase tracking-wider text-indigo/60">
-                Etapa {String(i + 1).padStart(2, '0')}
-              </span>
-            </div>
-            {i < nodes.length - 1 && (
-              <div class="hidden items-center self-center sm:flex" aria-hidden="true">
-                <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
-                  <line x1="2" y1="8" x2="22" y2="8" stroke="#4f46e5" stroke-width="2" class="flow-line" />
-                  <path d="M20 4l5 4-5 4" stroke="#4f46e5" stroke-width="2" fill="none" />
-                </svg>
-              </div>
-            )}
-          </>
-        ))
-      }
+    <!-- Riel de instrumentación: scroll-x en móvil, fila en desktop -->
+    <div class="reveal mt-14 -mx-6 overflow-x-auto px-6 pb-4">
+      <ol class="flex min-w-max items-stretch gap-0" data-stagger>
+        {
+          nodes.map((n, i) => (
+            <>
+              <li class="reveal card-lift instrument group flex w-[210px] flex-none flex-col p-4 shadow-soft">
+                <div class="mono mb-3 flex items-center justify-between text-[10px] uppercase tracking-widest text-signal">
+                  <span>[ {String(i + 1).padStart(2, '0')} ]</span>
+                  <span class="inline-flex h-9 w-9 items-center justify-center rounded border border-line bg-surface-2 text-signal transition group-hover:border-signal">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-5 w-5"
+                    >
+                      <path d={n.icon} />
+                    </svg>
+                  </span>
+                </div>
+                <p class="text-sm font-semibold leading-snug text-ink">{n.name}</p>
+                <p class="mt-1 text-xs leading-relaxed text-muted">{n.desc}</p>
+              </li>
+              {i < nodes.length - 1 && (
+                <li class="flex flex-none items-center self-center px-1" aria-hidden="true">
+                  <svg width="34" height="16" viewBox="0 0 34 16" fill="none">
+                    <line x1="2" y1="8" x2="26" y2="8" stroke="var(--color-signal)" stroke-width="2" class="flow-line" />
+                    <path d="M24 4l6 4-6 4" stroke="var(--color-signal)" stroke-width="2" fill="none" />
+                  </svg>
+                </li>
+              )}
+            </>
+          ))
+        }
+      </ol>
     </div>
 
     <!-- Figura opcional: transición de datos / capas IoT. Suelta el archivo y aparece. -->

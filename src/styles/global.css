@@ -1,42 +1,64 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/archivo';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
 
 /* Dark mode por clase en <html> (no por prefers-color-scheme) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Clarity — tokens de diseño (valores en modo claro) */
+/* ============================================================
+   Vatio — sistema de diseño "instrumento de laboratorio"
+   Acentos con significado de señal:
+     signal (verde fósforo) = señal limpia / suavizada / OK
+     amber                  = señal cruda / ruidosa / aviso
+   Valores en MODO CLARO (papel técnico); .dark hace override.
+   ============================================================ */
 @theme {
-  --color-indigo: #4f46e5;
-  --color-indigo-soft: #eef2ff;
-  --color-ink: #0f172a;
-  --color-muted: #64748b;
-  --color-soft: #475569;
-  --color-line: #e2e8f0;
-  --color-canvas: #ffffff;     /* secciones "blancas" + body */
-  --color-canvas-2: #f8fafc;   /* secciones alternas */
-  --color-surface: #ffffff;    /* tarjetas */
-  --color-surface-2: #f1f5f9;  /* insets, chips, bloques de fórmula */
-  --font-sans: 'Inter Variable', system-ui, sans-serif;
-  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.06);
-  --shadow-lift: 0 1px 2px rgb(15 23 42 / 0.05), 0 18px 40px rgb(79 70 229 / 0.14);
-  --radius-card: 1rem;
+  --color-signal: #0d8f5b;       /* acento primario */
+  --color-signal-soft: #e2ece4;  /* fondos/chips de acento */
+  --color-amber: #a85d12;        /* acento secundario / cruda */
+  --color-graphite: #2b3340;     /* grid de osciloscopio, ejes */
+  --color-ink: #161a20;          /* texto grafito casi negro */
+  --color-muted: #5c6470;
+  --color-soft: #3c424c;
+  --color-line: #d6d0c2;         /* hairline cálido */
+  --color-canvas: #f3f1ea;       /* papel crema + body */
+  --color-canvas-2: #ebe8dd;     /* secciones alternas */
+  --color-surface: #faf8f2;      /* tarjetas */
+  --color-surface-2: #e7e3d6;    /* insets, chips, bloques de fórmula */
+
+  --font-sans: 'Archivo Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Sombras planas, neutras (sin tinte de color). */
+  --shadow-soft: 0 1px 0 rgb(22 26 32 / 0.04), 0 1px 3px rgb(22 26 32 / 0.06);
+  --shadow-lift: 0 1px 0 rgb(22 26 32 / 0.05), 0 12px 28px rgb(22 26 32 / 0.12);
+  --radius-card: 0.5rem;
+
+  /* Glow de fósforo — casi nulo en claro. */
+  --glow-signal: 0 0 0 rgb(13 143 91 / 0);
 }
 
-/* Override de tokens en modo oscuro — todo lo demás cae en cascada */
 :root { color-scheme: light; }
 .dark {
   color-scheme: dark;
-  --color-indigo-soft: #1e1b4b;
-  --color-ink: #f1f5f9;
-  --color-muted: #94a3b8;
-  --color-soft: #cbd5e1;
-  --color-line: #243049;
-  --color-canvas: #0a0f1e;
-  --color-canvas-2: #0c1426;
-  --color-surface: #121c33;
-  --color-surface-2: #1c2942;
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px rgb(0 0 0 / 0.35);
-  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 20px 44px rgb(79 70 229 / 0.28);
+  --color-signal: #34e29b;
+  --color-signal-soft: #0f231b;
+  --color-amber: #f5b13f;
+  --color-graphite: #3a4654;
+  --color-ink: #e7eadf;          /* off-white de pantalla de fósforo */
+  --color-muted: #8b94a0;
+  --color-soft: #c4ccd4;
+  --color-line: #232b33;
+  --color-canvas: #090c0f;       /* near-black frío */
+  --color-canvas-2: #0c1014;
+  --color-surface: #11161b;
+  --color-surface-2: #1a2027;
+
+  --shadow-soft: 0 0 0 1px rgb(0 0 0 / 0), 0 2px 6px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 0 0 1px rgb(52 226 155 / 0.06), 0 16px 36px rgb(0 0 0 / 0.55);
+  --glow-signal: 0 0 12px rgb(52 226 155 / 0.55);
 }
 
 html {
@@ -51,81 +73,116 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ---- Texto con degradado ---- */
-.text-gradient {
-  background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 45%, #0ea5e9 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+/* Números siempre tabulares y en mono donde toca "lectura de instrumento". */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+.mono { font-family: var(--font-mono); }
 
-/* ---- Eyebrow / kicker de sección ---- */
+/* ---- Eyebrow / kicker: etiqueta de canal de instrumento ---- */
 .kicker {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-indigo);
+  color: var(--color-signal);
 }
 .kicker::before {
-  content: '';
-  width: 1.5rem;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #4f46e5, #0ea5e9);
+  content: '◆';
+  font-size: 0.55rem;
+  line-height: 1;
+  color: var(--color-signal);
+  filter: drop-shadow(var(--glow-signal));
 }
 
-/* ---- Fondos decorativos ---- */
-.bg-grid {
+/* ---- Acento de señal: texto en verde fósforo con glow ---- */
+.text-signal { color: var(--color-signal); }
+.glow { filter: drop-shadow(var(--glow-signal)); }
+
+/* ---- Rejilla de osciloscopio (reemplaza bg-grid + blobs) ---- */
+.graticule {
+  background-color: transparent;
   background-image:
-    linear-gradient(to right, rgb(79 70 229 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(79 70 229 / 0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+    /* líneas mayores cada 200px */
+    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.16) 1px, transparent 1px),
+    /* líneas finas cada 40px */
+    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.07) 1px, transparent 1px);
+  background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
 }
-.blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(60px);
-  opacity: 0.5;
-  pointer-events: none;
-  animation: float 11s ease-in-out infinite;
+.dark .graticule {
+  background-image:
+    linear-gradient(to right, rgb(from var(--color-signal) r g b / 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(from var(--color-signal) r g b / 0.10) 1px, transparent 1px),
+    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.45) 1px, transparent 1px);
 }
-.dark .blob { opacity: 0.22; }
 
-/* ---- Punto de estado activo, pulsante ---- */
+/* ---- Pantalla de instrumento: graticule + viñeteado ---- */
+.screen {
+  position: relative;
+  background:
+    radial-gradient(ellipse 120% 100% at 50% 0%, transparent 55%, rgb(0 0 0 / 0.04) 100%),
+    var(--color-surface);
+}
+.dark .screen {
+  background:
+    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.5) 100%),
+    #060809;
+}
+
+/* ---- Scanlines CRT, muy sutil, sólo oscuro ---- */
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: transparent;
+}
+.dark .scanline::after {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(52 226 155 / 0.04) 0px,
+    rgb(52 226 155 / 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* ---- Marco de tarjeta tipo módulo de instrumento ---- */
+.instrument {
+  position: relative;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+}
+/* tick de esquina decorativo */
+.instrument::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border-top: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-line);
+  opacity: 0.7;
+}
+
+/* ---- Punto de estado activo, pulsante (verde señal) ---- */
 @keyframes pulse-dot {
-  0%   { box-shadow: 0 0 0 0 rgb(34 197 94 / 0.5); }
-  70%  { box-shadow: 0 0 0 8px rgb(34 197 94 / 0); }
-  100% { box-shadow: 0 0 0 0 rgb(34 197 94 / 0); }
+  0%   { box-shadow: 0 0 0 0 rgb(from var(--color-signal) r g b / 0.5); }
+  70%  { box-shadow: 0 0 0 8px rgb(from var(--color-signal) r g b / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(from var(--color-signal) r g b / 0); }
 }
 .pulse-dot { animation: pulse-dot 2s infinite; }
 
 /* ---- Flujo de datos en el diagrama de arquitectura ---- */
 @keyframes flow { to { stroke-dashoffset: -16; } }
 .flow-line { stroke-dasharray: 6 6; animation: flow 1s linear infinite; }
-
-/* ---- Float / shimmer ---- */
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(18px, -22px) scale(1.08); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.animate-gradient {
-  background-size: 220% 220%;
-  animation: gradient-pan 7s ease infinite;
-}
-@keyframes gradient-pan {
-  0%, 100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
-}
 
 /* ---- Reveal al hacer scroll ---- */
 .reveal {
@@ -142,14 +199,15 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .blob, .animate-gradient, .flow-line, .pulse-dot { animation: none; }
+  .pulse-dot, .flow-line { animation: none; }
 }
 
 /* ---- Lift en tarjetas interactivas ---- */
 .card-lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .card-lift:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
+  border-color: var(--color-signal);
 }

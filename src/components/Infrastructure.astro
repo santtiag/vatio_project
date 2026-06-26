@@ -21,8 +21,8 @@ const bloques = [
 
 <section id="infraestructura" class="border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Dónde se mide</p>
-    <h2 class="reveal mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+    <p class="reveal kicker">Sites</p>
+    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
       Infraestructura universitaria
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
@@ -34,8 +34,8 @@ const bloques = [
     <div class="mt-14 grid gap-6 sm:grid-cols-2" data-stagger>
       {
         bloques.map((b) => (
-          <div class="reveal card-lift overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
-            <figure class="relative aspect-[16/9] bg-gradient-to-br from-indigo-soft to-surface-2">
+          <div class="reveal card-lift instrument overflow-hidden shadow-soft">
+            <figure class="relative aspect-[16/9] bg-surface-2">
               <img
                 src={b.img}
                 alt={`Fotografía del ${b.nombre} en CECAR`}
@@ -43,22 +43,22 @@ const bloques = [
                 loading="lazy"
                 onerror="this.style.display='none'"
               />
-              <figcaption class="absolute left-4 top-4 rounded-full bg-surface/85 px-3 py-1 text-xs font-medium text-ink backdrop-blur">
+              <figcaption class="mono absolute left-3 top-3 rounded border border-line bg-surface px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-ink">
                 {b.nombre}
               </figcaption>
             </figure>
             <div class="p-6">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold">{b.nombre}</h3>
-                <span class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600">
-                  <span class="pulse-dot h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                <span class="mono inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-signal">
+                  <span class="pulse-dot h-2.5 w-2.5 rounded-full bg-signal" />
                   Activo
                 </span>
               </div>
-              <p class="mt-4 text-xs uppercase tracking-wider text-muted">Tipo de carga</p>
+              <p class="mono mt-4 text-[11px] uppercase tracking-widest text-muted">Tipo de carga</p>
               <p class="text-base font-medium text-ink">{b.carga}</p>
               <p class="mt-4 text-sm leading-relaxed text-soft">{b.detalle}</p>
-              <p class="mt-4 text-xs font-medium text-indigo">{b.estado}</p>
+              <p class="mono mt-4 text-[11px] uppercase tracking-wider text-signal">{b.estado}</p>
             </div>
           </div>
         ))
