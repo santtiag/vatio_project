@@ -1,0 +1,307 @@
+- generic [active] [ref=e1]:
+  - button "Cambiar tema claro / oscuro" [ref=e2]:
+    - img [ref=e3]
+  - main [ref=e5]:
+    - generic [ref=e8]:
+      - generic [ref=e9]: Proyecto de investigación · Ingeniería Eléctrica · CECAR
+      - heading "Sistema Inteligente de Monitoreo de Parámetros Eléctricos" [level=1] [ref=e11]
+      - paragraph [ref=e12]: Corporación Universitaria del Caribe (CECAR) — Ingeniería Eléctrica
+      - paragraph [ref=e13]:
+        - text: Una plataforma que convierte la energía de los edificios universitarios en conocimiento. Sensores de alta precisión capturan el pulso eléctrico de cada bloque, un pipeline de filtrado limpia el ruido inherente a la medición y una red neuronal recurrente
+        - strong [ref=e14]: aprende a predecir el consumo
+        - text: "con días de anticipación. El objetivo: demostrar que un dato bien suavizado vale más que un dato crudo a la hora de anticipar la demanda energética."
+      - generic [ref=e15]:
+        - link "Explorar la arquitectura" [ref=e16] [cursor=pointer]:
+          - /url: "#arquitectura"
+        - link "Ver los algoritmos" [ref=e17] [cursor=pointer]:
+          - /url: "#suavizado"
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - text: Señal de corriente — ruidosa
+          - generic [ref=e22]: →
+          - text: suavizada (Whittaker)
+        - generic [ref=e23]: Señal sintética · escala ilustrativa
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - term [ref=e27]: "0"
+          - definition [ref=e28]: Bloques universitarios monitoreados
+        - generic [ref=e29]:
+          - term [ref=e30]: "0"
+          - definition [ref=e31]: Parámetros eléctricos analizados
+        - generic [ref=e32]:
+          - term [ref=e33]: λ = 0
+          - definition [ref=e34]: Parámetro óptimo del suavizador Whittaker
+        - generic [ref=e35]:
+          - term [ref=e36]: 0 h
+          - definition [ref=e37]: Horizonte máximo de predicción (7 días)
+    - generic [ref=e39]:
+      - paragraph [ref=e40]: Cómo funciona
+      - heading "Arquitectura del sistema" [level=2] [ref=e41]
+      - paragraph [ref=e42]: Cada vatio recorre un camino. Desde la pinza que abraza el conductor hasta la gráfica que aparece en pantalla, el dato atraviesa ocho etapas de adquisición, transmisión, depuración y predicción. Nada se mide dos veces; todo se transforma una vez bien.
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - img [ref=e46]
+          - paragraph [ref=e48]: Sensores (CT / Bobinas Rogowski)
+          - paragraph [ref=e49]: Captura analógica de corriente en la línea eléctrica
+          - generic [ref=e50]: Etapa 01
+        - img [ref=e52]
+        - generic [ref=e54]:
+          - img [ref=e56]
+          - paragraph [ref=e58]: ADE9000 (Analog Devices)
+          - paragraph [ref=e59]: Front-end analógico de alta precisión — Clase 0.2, 7 ADCs internos
+          - generic [ref=e60]: Etapa 02
+        - img [ref=e62]
+        - generic [ref=e64]:
+          - img [ref=e66]
+          - paragraph [ref=e68]: Microcontrolador
+          - paragraph [ref=e69]: Empaqueta y transmite datos digitalizados vía SPI
+          - generic [ref=e70]: Etapa 03
+        - img [ref=e72]
+        - generic [ref=e74]:
+          - img [ref=e76]
+          - paragraph [ref=e78]: WiFi / UTP
+          - paragraph [ref=e79]: Canal de transmisión hacia el servidor de procesamiento
+          - generic [ref=e80]: Etapa 04
+        - img [ref=e82]
+        - generic [ref=e84]:
+          - img [ref=e86]
+          - paragraph [ref=e88]: Vatio Laboratory
+          - paragraph [ref=e89]: Servidor central de almacenamiento y procesamiento
+          - generic [ref=e90]: Etapa 05
+        - img [ref=e92]
+        - generic [ref=e94]:
+          - img [ref=e96]
+          - paragraph [ref=e98]: Motor de Suavizado
+          - paragraph [ref=e99]: Filtros Kalman, Savitzky-Golay y Whittaker
+          - generic [ref=e100]: Etapa 06
+        - img [ref=e102]
+        - generic [ref=e104]:
+          - img [ref=e106]
+          - paragraph [ref=e108]: Modelo Predictivo (LSTM)
+          - paragraph [ref=e109]: Red neuronal recurrente de 7 capas para predicción energética
+          - generic [ref=e110]: Etapa 07
+        - img [ref=e112]
+        - generic [ref=e114]:
+          - img [ref=e116]
+          - paragraph [ref=e118]: Visualización
+          - paragraph [ref=e119]: Dashboard web interactivo (Next.js + React)
+          - generic [ref=e120]: Etapa 08
+    - generic [ref=e122]:
+      - paragraph [ref=e123]: Dónde se mide
+      - heading "Infraestructura universitaria" [level=2] [ref=e124]
+      - paragraph [ref=e125]: El estudio se concentra en dos bloques del campus de CECAR, elegidos por sus perfiles de carga complementarios. Se documenta únicamente el tipo de carga y el estado de monitoreo de cada bloque — nunca lecturas operacionales.
+      - generic [ref=e126]:
+        - generic [ref=e127]:
+          - figure "Bloque A" [ref=e128]:
+            - img "Fotografía del Bloque A en CECAR" [ref=e129]
+            - generic [ref=e130]: Bloque A
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - heading "Bloque A" [level=3] [ref=e133]
+              - generic [ref=e134]: Activo
+            - paragraph [ref=e136]: Tipo de carga
+            - paragraph [ref=e137]: Aulas y espacios académicos
+            - paragraph [ref=e138]: "Carga de tipo académico con perfil diurno marcado: iluminación, climatización y equipos de cómputo que siguen el ritmo de las clases."
+            - paragraph [ref=e139]: Activo (datos desde junio 2024)
+        - generic [ref=e140]:
+          - figure "Bloque F" [ref=e141]:
+            - img "Fotografía del Bloque F en CECAR" [ref=e142]
+            - generic [ref=e143]: Bloque F
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - heading "Bloque F" [level=3] [ref=e146]
+              - generic [ref=e147]: Activo
+            - paragraph [ref=e149]: Tipo de carga
+            - paragraph [ref=e150]: Laboratorios y área de evaluación principal
+            - paragraph [ref=e151]: "Punto de evaluación principal del proyecto: laboratorios con cargas variables e intensivas, ideales para poner a prueba el suavizado y la predicción."
+            - paragraph [ref=e152]: Activo (datos desde noviembre 2024)
+      - paragraph [ref=e153]:
+        - img [ref=e154]
+        - text: Datos operacionales anonimizados — lecturas no expuestas
+    - generic [ref=e158]:
+      - paragraph [ref=e159]: Depuración de la señal
+      - heading "Algoritmos de suavizado" [level=2] [ref=e160]
+      - paragraph [ref=e161]:
+        - text: Toda medición eléctrica llega con ruido. Antes de predecir, hay que decidir cómo limpiarla — y hacerlo
+        - strong [ref=e162]: sin conocer la verdad de fondo
+        - text: . Se comparan tres formulaciones clásicas y se selecciona la mejor por validación cruzada generalizada (GCV), un criterio que no necesita ground truth.
+      - generic [ref=e163]:
+        - generic [ref=e164]:
+          - heading "Filtro de Kalman" [level=3] [ref=e165]
+          - paragraph [ref=e166]: "Estimación bayesiana recursiva: predice, mide y corrige en cada paso."
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - generic [ref=e169]: Predicción
+              - code [ref=e170]: x̂ₖ⁻ = x̂ₖ₋₁ , Pₖ⁻ = Pₖ₋₁ + Q
+            - generic [ref=e171]:
+              - generic [ref=e172]: Ganancia
+              - code [ref=e173]: Kₖ = Pₖ⁻ / (Pₖ⁻ + R)
+            - generic [ref=e174]:
+              - generic [ref=e175]: Corrección
+              - code [ref=e176]: x̂ₖ = x̂ₖ⁻ + Kₖ (zₖ − x̂ₖ⁻)
+            - generic [ref=e177]:
+              - generic [ref=e178]: Covarianza
+              - code [ref=e179]: Pₖ = (1 − Kₖ) Pₖ⁻
+          - list [ref=e180]:
+            - listitem [ref=e181]: Q = process_variance = 0.1
+            - listitem [ref=e182]: R = measurement_variance = 10
+            - listitem [ref=e183]: P₀ = initial_error = 1.0
+          - paragraph [ref=e184]: Cuanto mayor es R frente a Q, más confía el filtro en su predicción y menos en la medición ruidosa.
+        - generic [ref=e185]:
+          - heading "Savitzky-Golay" [level=3] [ref=e186]
+          - paragraph [ref=e187]: "Ajusta un polinomio local por mínimos cuadrados y evalúa su centro: suaviza sin aplanar los picos."
+          - generic [ref=e188]:
+            - generic [ref=e189]:
+              - generic [ref=e190]: Convolución
+              - code [ref=e191]: ŷᵢ = Σⱼ cⱼ · yᵢ₊ⱼ , j = −m … m, 2m+1 = 31
+            - generic [ref=e192]:
+              - generic [ref=e193]: Coeficientes
+              - code [ref=e194]: C = (Aᵀ A)⁻¹ Aᵀ , Aᵢⱼ = jⁱ
+            - generic [ref=e195]:
+              - generic [ref=e196]: Ventana
+              - code [ref=e197]: A ∈ Vandermonde, grado p = 2
+          - list [ref=e198]:
+            - listitem [ref=e199]: window_length = 31
+            - listitem [ref=e200]: polyorder = 2
+          - paragraph [ref=e201]: A es la matriz de Vandermonde de la ventana; la fila central de C da los pesos de suavizado.
+        - generic [ref=e202]:
+          - generic [ref=e203]: ★ Mejor GCV
+          - heading "Whittaker" [level=3] [ref=e204]
+          - paragraph [ref=e205]: Equilibra fidelidad al dato y suavidad penalizando la d-ésima derivada de la señal estimada.
+          - generic [ref=e206]:
+            - generic [ref=e207]:
+              - generic [ref=e208]: Funcional
+              - code [ref=e209]: Q(z) = ‖y − z‖² + λ ‖Dᵈ z‖²
+            - generic [ref=e210]:
+              - generic [ref=e211]: Solución
+              - code [ref=e212]: z = (I + λ Dᵈᵀ Dᵈ)⁻¹ y
+            - generic [ref=e213]:
+              - generic [ref=e214]: Selección (GCV)
+              - code [ref=e215]: GCV(λ) = n‖y − z‖² / (n − tr H)² , H = (I + λ DᵀD)⁻¹
+          - list [ref=e216]:
+            - listitem [ref=e217]: λ = 10
+            - listitem [ref=e218]: d = 2
+            - listitem [ref=e219]: GCV = 11.1403 (mínimo)
+          - paragraph [ref=e220]: λ se elige minimizando GCV — sin ground truth. Dᵈ es la matriz de diferencias de orden d.
+      - generic [ref=e222]:
+        - heading "Comparativa de filtros sobre señal sintética" [level=3] [ref=e223]
+        - generic [ref=e224]: Datos representativos — escala ilustrativa
+    - generic [ref=e227]:
+      - paragraph [ref=e228]: Inteligencia predictiva
+      - heading "Modelo predictivo LSTM" [level=2] [ref=e229]
+      - paragraph [ref=e230]: Una red neuronal recurrente de 7 capas que recuerda el pasado para anticipar el futuro. Las celdas LSTM capturan la dinámica temporal del consumo — los ciclos diarios, los picos de laboratorio, las caídas nocturnas — y proyectan la demanda energética con hasta una semana de anticipación.
+      - figure "Arquitectura del modelo LSTM — flujo de capas de entrada a predicción." [ref=e231]:
+        - img "Diagrama de la arquitectura del modelo LSTM de 7 capas"
+        - generic [ref=e232]: Arquitectura del modelo LSTM — flujo de capas de entrada a predicción.
+      - generic [ref=e233]:
+        - paragraph [ref=e234]: Arquitectura — 7 capas
+        - generic [ref=e235]:
+          - generic [ref=e236]: Input
+          - generic [ref=e237]: →
+          - generic [ref=e238]: LSTM 1
+          - generic [ref=e239]: →
+          - generic [ref=e240]: Dropout 1
+          - generic [ref=e241]: →
+          - generic [ref=e242]: LSTM 2
+          - generic [ref=e243]: →
+          - generic [ref=e244]: Dropout 2
+          - generic [ref=e245]: →
+          - generic [ref=e246]: Dense 1
+          - generic [ref=e247]: →
+          - generic [ref=e248]: Dense Output
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - paragraph [ref=e251]: Features de entrada — 5 parámetros
+          - list [ref=e252]:
+            - listitem [ref=e253]:
+              - generic [ref=e254]: Voltaje
+              - generic [ref=e255]: V
+            - listitem [ref=e256]:
+              - generic [ref=e257]: Corriente
+              - generic [ref=e258]: A
+            - listitem [ref=e259]:
+              - generic [ref=e260]: Potencia Activa
+              - generic [ref=e261]: W
+            - listitem [ref=e262]:
+              - generic [ref=e263]: Potencia Reactiva
+              - generic [ref=e264]: VAR
+            - listitem [ref=e265]:
+              - generic [ref=e266]: Factor de Potencia
+              - generic [ref=e267]: adimensional
+        - generic [ref=e268]:
+          - paragraph [ref=e269]: Métricas objetivo del modelo
+          - generic [ref=e270]:
+            - generic [ref=e271]:
+              - paragraph [ref=e272]: < 3%
+              - paragraph [ref=e273]: MAE
+            - generic [ref=e274]:
+              - paragraph [ref=e275]: < 5%
+              - paragraph [ref=e276]: RMSE
+            - generic [ref=e277]:
+              - paragraph [ref=e278]: "> 0.90"
+              - paragraph [ref=e279]: NSE
+            - generic [ref=e280]:
+              - paragraph [ref=e281]: secundaria
+              - paragraph [ref=e282]: MSE
+      - generic [ref=e283]:
+        - paragraph [ref=e284]:
+          - img [ref=e285]
+          - text: Hipótesis del sistema
+        - paragraph [ref=e287]: El modelo entrenado con datos suavizados (Whittaker, λ = 10) supera estadísticamente al modelo entrenado con datos ruidosos, al evaluarse contra el ground truth.
+      - generic [ref=e289]:
+        - heading "Valores reales vs. predichos" [level=3] [ref=e290]
+        - generic [ref=e291]: Datos representativos — escala ilustrativa
+    - generic [ref=e294]:
+      - paragraph [ref=e295]: Cómo se hizo
+      - heading "Metodología" [level=2] [ref=e296]
+      - paragraph [ref=e297]: Seis etapas que llevan el proyecto del cableado físico al artículo científico — del hierro al insight.
+      - list [ref=e298]:
+        - listitem [ref=e299]:
+          - generic [ref=e301]: "1"
+          - generic [ref=e302]:
+            - heading "Levantamiento de infraestructura" [level=3] [ref=e303]
+            - paragraph [ref=e304]: Mapeo de los sistemas eléctricos de los Bloques A y F en CECAR e identificación de puntos de medición.
+        - listitem [ref=e305]:
+          - generic [ref=e307]: "2"
+          - generic [ref=e308]:
+            - heading "Instalación de sensores" [level=3] [ref=e309]
+            - paragraph [ref=e310]: Despliegue de CTs / Bobinas Rogowski conectados al ADE9000 (Clase 0.2) en tableros de distribución.
+        - listitem [ref=e311]:
+          - generic [ref=e313]: "3"
+          - generic [ref=e314]:
+            - heading "Pipeline de adquisición" [level=3] [ref=e315]
+            - paragraph [ref=e316]: Configuración del microcontrolador para transmitir datos vía WiFi/UTP hacia el Vatio Laboratory a resolución minutal.
+        - listitem [ref=e317]:
+          - generic [ref=e319]: "4"
+          - generic [ref=e320]:
+            - heading "Algoritmos de suavizado" [level=3] [ref=e321]
+            - paragraph [ref=e322]: "Implementación y validación de Kalman, Savitzky-Golay y Whittaker. Selección por criterio GCV (sin ground truth). Ganador: Whittaker con λ=10, d=2."
+        - listitem [ref=e323]:
+          - generic [ref=e325]: "5"
+          - generic [ref=e326]:
+            - heading "Modelo LSTM" [level=3] [ref=e327]
+            - paragraph [ref=e328]: Entrenamiento de dos variantes (datos suavizados vs. datos ruidosos) y evaluación comparativa contra ground truth con métricas MAE, RMSE y NSE.
+        - listitem [ref=e329]:
+          - generic [ref=e330]: "6"
+          - generic [ref=e331]:
+            - heading "Análisis e iteración" [level=3] [ref=e332]
+            - paragraph [ref=e333]: Validación de hipótesis, ajuste de hiperparámetros y preparación de publicaciones científicas (artículos WEA y MDPI).
+  - contentinfo [ref=e334]:
+    - generic [ref=e335]:
+      - generic [ref=e336]:
+        - generic [ref=e337]:
+          - paragraph [ref=e338]: Proyecto
+          - paragraph [ref=e339]: Sistema Inteligente de Monitoreo de Parámetros Eléctricos
+          - paragraph [ref=e340]: Institución
+          - paragraph [ref=e341]: Corporación Universitaria del Caribe — CECAR
+        - generic [ref=e342]:
+          - generic [ref=e343]:
+            - paragraph [ref=e344]: Financiamiento
+            - paragraph [ref=e345]: Convocatoria 938 de MINCIENCIAS — «Plataforma Tecnológica Modular de Eficiencia Energética»
+          - generic [ref=e346]:
+            - paragraph [ref=e347]: Autor
+            - paragraph [ref=e348]: Santiago José Romero Solana
+          - generic [ref=e349]:
+            - paragraph [ref=e350]: Año
+            - paragraph [ref=e351]: 2025 – 2026
+      - paragraph [ref=e352]: Los datos presentados en esta página son representativos e ilustrativos. No reflejan lecturas operacionales en tiempo real ni exponen información de la infraestructura eléctrica de CECAR.

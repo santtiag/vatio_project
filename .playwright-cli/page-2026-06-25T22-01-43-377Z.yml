@@ -1,0 +1,235 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: Proyecto de investigación · Ingeniería Eléctrica
+      - heading "Sistema Inteligente de Monitoreo de Parámetros Eléctricos" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Corporación Universitaria del Caribe (CECAR) — Ingeniería Eléctrica
+      - generic [ref=e10]:
+        - generic [ref=e11]: Señal de corriente — ruidosa → suavizada (Whittaker)
+        - generic [ref=e12]: Señal sintética · escala ilustrativa
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - term [ref=e16]: "2"
+          - definition [ref=e17]: Bloques universitarios monitoreados
+        - generic [ref=e18]:
+          - term [ref=e19]: "5"
+          - definition [ref=e20]: Parámetros eléctricos analizados
+        - generic [ref=e21]:
+          - term [ref=e22]: λ = 10
+          - definition [ref=e23]: Parámetro óptimo del suavizador Whittaker
+        - generic [ref=e24]:
+          - term [ref=e25]: 168 h
+          - definition [ref=e26]: Horizonte máximo de predicción (7 días)
+    - generic [ref=e28]:
+      - heading "Arquitectura del sistema" [level=2] [ref=e29]
+      - paragraph [ref=e30]: Flujo de datos extremo a extremo, desde la captura analógica en la línea eléctrica hasta la visualización web.
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - img [ref=e34]
+          - paragraph [ref=e36]: Sensores (CT / Bobinas Rogowski)
+          - paragraph [ref=e37]: Captura analógica de corriente en la línea eléctrica
+        - img [ref=e39]
+        - generic [ref=e41]:
+          - img [ref=e43]
+          - paragraph [ref=e45]: ADE9000 (Analog Devices)
+          - paragraph [ref=e46]: Front-end analógico de alta precisión — Clase 0.2, 7 ADCs internos
+        - img [ref=e48]
+        - generic [ref=e50]:
+          - img [ref=e52]
+          - paragraph [ref=e54]: Microcontrolador
+          - paragraph [ref=e55]: Empaqueta y transmite datos digitalizados vía SPI
+        - img [ref=e57]
+        - generic [ref=e59]:
+          - img [ref=e61]
+          - paragraph [ref=e63]: WiFi / UTP
+          - paragraph [ref=e64]: Canal de transmisión hacia el servidor de procesamiento
+        - img [ref=e66]
+        - generic [ref=e68]:
+          - img [ref=e70]
+          - paragraph [ref=e72]: Vatio Laboratory
+          - paragraph [ref=e73]: Servidor central de almacenamiento y procesamiento
+        - img [ref=e75]
+        - generic [ref=e77]:
+          - img [ref=e79]
+          - paragraph [ref=e81]: Motor de Suavizado
+          - paragraph [ref=e82]: Filtros Kalman, Savitzky-Golay y Whittaker
+        - img [ref=e84]
+        - generic [ref=e86]:
+          - img [ref=e88]
+          - paragraph [ref=e90]: Modelo Predictivo (LSTM)
+          - paragraph [ref=e91]: Red neuronal recurrente de 7 capas para predicción energética
+        - img [ref=e93]
+        - generic [ref=e95]:
+          - img [ref=e97]
+          - paragraph [ref=e99]: Visualización
+          - paragraph [ref=e100]: Dashboard web interactivo (Next.js + React)
+    - generic [ref=e102]:
+      - heading "Infraestructura universitaria" [level=2] [ref=e103]
+      - paragraph [ref=e104]: Dos bloques de CECAR monitoreados. Se muestra únicamente el tipo de carga y el estado del bloque.
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - heading "Bloque A" [level=3] [ref=e108]
+            - generic [ref=e109]: Activo (datos desde junio 2024)
+          - paragraph [ref=e111]: Tipo de carga
+          - paragraph [ref=e112]: Aulas y espacios académicos
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - heading "Bloque F" [level=3] [ref=e115]
+            - generic [ref=e116]: Activo
+          - paragraph [ref=e118]: Tipo de carga
+          - paragraph [ref=e119]: Laboratorios y área de evaluación principal
+      - paragraph [ref=e120]: Datos operacionales anonimizados — lecturas no expuestas
+    - generic [ref=e122]:
+      - heading "Algoritmos de suavizado" [level=2] [ref=e123]
+      - paragraph [ref=e124]: Tres algoritmos evaluados sobre la señal de corriente. La selección se hace por criterio GCV (sin ground truth).
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - heading "Filtro de Kalman" [level=3] [ref=e127]
+          - generic [ref=e128]: x̂ₖ = x̂ₖ₋₁ + Kₖ (zₖ − x̂ₖ₋₁)
+          - list [ref=e129]:
+            - listitem [ref=e130]: process_variance = 0.1
+            - listitem [ref=e131]: measurement_variance = 10
+            - listitem [ref=e132]: initial_error = 1.0
+          - paragraph [ref=e133]: Estimación bayesiana recursiva del estado de la señal
+        - generic [ref=e134]:
+          - heading "Savitzky-Golay" [level=3] [ref=e135]
+          - generic [ref=e136]: Ajuste polinómico local por mínimos cuadrados en ventana deslizante
+          - list [ref=e137]:
+            - listitem [ref=e138]: window_length = 31
+            - listitem [ref=e139]: polyorder = 2
+          - paragraph [ref=e140]: Suavizado que preserva la forma de los picos de la señal
+        - generic [ref=e141]:
+          - generic [ref=e142]: ★ Mejor GCV
+          - heading "Whittaker" [level=3] [ref=e143]
+          - generic [ref=e144]: min ‖y − z‖² + λ ‖Dᵈ z‖²
+          - list [ref=e145]:
+            - listitem [ref=e146]: λ = 10
+            - listitem [ref=e147]: d = 2
+            - listitem [ref=e148]: GCV = 11.1403
+          - paragraph [ref=e149]: Penalización derivativa que balancea fidelidad y suavidad
+      - generic [ref=e151]:
+        - heading "Comparativa de filtros sobre señal sintética" [level=3] [ref=e152]
+        - generic [ref=e153]: Datos representativos — escala ilustrativa
+    - generic [ref=e156]:
+      - heading "Modelo predictivo (LSTM)" [level=2] [ref=e157]
+      - paragraph [ref=e158]: Red neuronal recurrente de 7 capas entrenada para predicción energética.
+      - generic [ref=e159]:
+        - paragraph [ref=e160]: Arquitectura
+        - generic [ref=e161]:
+          - generic [ref=e162]: Input
+          - generic [ref=e163]: →
+          - generic [ref=e164]: LSTM 1
+          - generic [ref=e165]: →
+          - generic [ref=e166]: Dropout 1
+          - generic [ref=e167]: →
+          - generic [ref=e168]: LSTM 2
+          - generic [ref=e169]: →
+          - generic [ref=e170]: Dropout 2
+          - generic [ref=e171]: →
+          - generic [ref=e172]: Dense 1
+          - generic [ref=e173]: →
+          - generic [ref=e174]: Dense Output
+      - generic [ref=e175]:
+        - generic [ref=e176]:
+          - paragraph [ref=e177]: Features de entrada
+          - list [ref=e178]:
+            - listitem [ref=e179]:
+              - generic [ref=e180]: Voltaje
+              - generic [ref=e181]: V
+            - listitem [ref=e182]:
+              - generic [ref=e183]: Corriente
+              - generic [ref=e184]: A
+            - listitem [ref=e185]:
+              - generic [ref=e186]: Potencia Activa
+              - generic [ref=e187]: W
+            - listitem [ref=e188]:
+              - generic [ref=e189]: Potencia Reactiva
+              - generic [ref=e190]: VAR
+            - listitem [ref=e191]:
+              - generic [ref=e192]: Factor de Potencia
+              - generic [ref=e193]: adimensional
+        - generic [ref=e194]:
+          - paragraph [ref=e195]: Métricas objetivo del modelo
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - paragraph [ref=e198]: < 3%
+              - paragraph [ref=e199]: MAE
+            - generic [ref=e200]:
+              - paragraph [ref=e201]: < 5%
+              - paragraph [ref=e202]: RMSE
+            - generic [ref=e203]:
+              - paragraph [ref=e204]: "> 0.90"
+              - paragraph [ref=e205]: NSE
+            - generic [ref=e206]:
+              - paragraph [ref=e207]: métrica secundaria
+              - paragraph [ref=e208]: MSE
+      - generic [ref=e209]:
+        - paragraph [ref=e210]: Hipótesis del sistema
+        - paragraph [ref=e211]: El modelo entrenado con datos suavizados (Whittaker, λ = 10) supera estadísticamente al modelo entrenado con datos ruidosos, al evaluarse contra el ground truth.
+      - generic [ref=e213]:
+        - heading "Valores reales vs. predichos" [level=3] [ref=e214]
+        - generic [ref=e215]: Datos representativos — escala ilustrativa
+    - generic [ref=e218]:
+      - heading "Métricas generales" [level=2] [ref=e219]
+      - paragraph [ref=e220]: Dashboard agregado — vista representativa.
+      - generic [ref=e221]:
+        - generic [ref=e223]:
+          - heading "Consumo energético mensual por bloque" [level=3] [ref=e224]
+          - generic [ref=e225]: escala ilustrativa
+        - generic [ref=e228]:
+          - heading "Tendencia de eficiencia del sistema" [level=3] [ref=e229]
+          - generic [ref=e230]: escala ilustrativa
+      - paragraph [ref=e232]: Datos representativos — escala ilustrativa
+    - generic [ref=e234]:
+      - heading "Metodología" [level=2] [ref=e235]
+      - list [ref=e236]:
+        - listitem [ref=e237]:
+          - generic [ref=e239]: "1"
+          - generic [ref=e240]:
+            - heading "Levantamiento de infraestructura" [level=3] [ref=e241]
+            - paragraph [ref=e242]: Mapeo de los sistemas eléctricos de los Bloques A y F en CECAR e identificación de puntos de medición.
+        - listitem [ref=e243]:
+          - generic [ref=e245]: "2"
+          - generic [ref=e246]:
+            - heading "Instalación de sensores" [level=3] [ref=e247]
+            - paragraph [ref=e248]: Despliegue de CTs / Bobinas Rogowski conectados al ADE9000 (Clase 0.2) en tableros de distribución.
+        - listitem [ref=e249]:
+          - generic [ref=e251]: "3"
+          - generic [ref=e252]:
+            - heading "Pipeline de adquisición" [level=3] [ref=e253]
+            - paragraph [ref=e254]: Configuración del microcontrolador para transmitir datos vía WiFi/UTP hacia el Vatio Laboratory a resolución minutal.
+        - listitem [ref=e255]:
+          - generic [ref=e257]: "4"
+          - generic [ref=e258]:
+            - heading "Algoritmos de suavizado" [level=3] [ref=e259]
+            - paragraph [ref=e260]: "Implementación y validación de Kalman, Savitzky-Golay y Whittaker. Selección por criterio GCV (sin ground truth). Ganador: Whittaker con λ=10, d=2."
+        - listitem [ref=e261]:
+          - generic [ref=e263]: "5"
+          - generic [ref=e264]:
+            - heading "Modelo LSTM" [level=3] [ref=e265]
+            - paragraph [ref=e266]: Entrenamiento de dos variantes (datos suavizados vs. datos ruidosos) y evaluación comparativa contra ground truth con métricas MAE, RMSE y NSE.
+        - listitem [ref=e267]:
+          - generic [ref=e268]: "6"
+          - generic [ref=e269]:
+            - heading "Análisis e iteración" [level=3] [ref=e270]
+            - paragraph [ref=e271]: Validación de hipótesis, ajuste de hiperparámetros y preparación de publicaciones científicas (artículos WEA y MDPI).
+  - contentinfo [ref=e272]:
+    - generic [ref=e273]:
+      - generic [ref=e274]:
+        - generic [ref=e275]:
+          - paragraph [ref=e276]: Proyecto
+          - paragraph [ref=e277]: Sistema Inteligente de Monitoreo de Parámetros Eléctricos
+          - paragraph [ref=e278]: Institución
+          - paragraph [ref=e279]: Corporación Universitaria del Caribe — CECAR
+        - generic [ref=e280]:
+          - generic [ref=e281]:
+            - paragraph [ref=e282]: Financiamiento
+            - paragraph [ref=e283]: Convocatoria 938 de MINCIENCIAS — «Plataforma Tecnológica Modular de Eficiencia Energética»
+          - generic [ref=e284]:
+            - paragraph [ref=e285]: Autor
+            - paragraph [ref=e286]: Santiago José Romero Solana
+          - generic [ref=e287]:
+            - paragraph [ref=e288]: Año
+            - paragraph [ref=e289]: 2025 – 2026
+      - paragraph [ref=e290]: Los datos presentados en esta página son representativos e ilustrativos. No reflejan lecturas operacionales en tiempo real ni exponen información de la infraestructura eléctrica de CECAR.

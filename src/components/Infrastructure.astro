@@ -1,0 +1,75 @@
+---
+const bloques = [
+  {
+    nombre: 'Bloque A',
+    carga: 'Aulas y espacios académicos',
+    estado: 'Activo (datos desde junio 2024)',
+    detalle:
+      'Carga de tipo académico con perfil diurno marcado: iluminación, climatización y equipos de cómputo que siguen el ritmo de las clases.',
+    img: '/images/bloque-a.jpg',
+  },
+  {
+    nombre: 'Bloque F',
+    carga: 'Laboratorios y área de evaluación principal',
+    estado: 'Activo (datos desde noviembre 2024)',
+    detalle:
+      'Punto de evaluación principal del proyecto: laboratorios con cargas variables e intensivas, ideales para poner a prueba el suavizado y la predicción.',
+    img: '/images/bloque-f.jpg',
+  },
+];
+---
+
+<section id="infraestructura" class="border-b border-line bg-canvas">
+  <div class="mx-auto max-w-6xl px-6 py-24">
+    <p class="reveal kicker">Dónde se mide</p>
+    <h2 class="reveal mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+      Infraestructura universitaria
+    </h2>
+    <p class="reveal mt-4 max-w-3xl text-lg text-muted">
+      El estudio se concentra en dos bloques del campus de CECAR, elegidos por sus perfiles
+      de carga complementarios. Se documenta únicamente el tipo de carga y el estado de
+      monitoreo de cada bloque — nunca lecturas operacionales.
+    </p>
+
+    <div class="mt-14 grid gap-6 sm:grid-cols-2" data-stagger>
+      {
+        bloques.map((b) => (
+          <div class="reveal card-lift overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+            <figure class="relative aspect-[16/9] bg-gradient-to-br from-indigo-soft to-surface-2">
+              <img
+                src={b.img}
+                alt={`Fotografía del ${b.nombre} en CECAR`}
+                class="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                onerror="this.style.display='none'"
+              />
+              <figcaption class="absolute left-4 top-4 rounded-full bg-surface/85 px-3 py-1 text-xs font-medium text-ink backdrop-blur">
+                {b.nombre}
+              </figcaption>
+            </figure>
+            <div class="p-6">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold">{b.nombre}</h3>
+                <span class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600">
+                  <span class="pulse-dot h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  Activo
+                </span>
+              </div>
+              <p class="mt-4 text-xs uppercase tracking-wider text-muted">Tipo de carga</p>
+              <p class="text-base font-medium text-ink">{b.carga}</p>
+              <p class="mt-4 text-sm leading-relaxed text-soft">{b.detalle}</p>
+              <p class="mt-4 text-xs font-medium text-indigo">{b.estado}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="reveal mt-6 flex items-center gap-2 text-sm italic text-muted">
+      <svg class="h-4 w-4 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
+      </svg>
+      Datos operacionales anonimizados — lecturas no expuestas
+    </p>
+  </div>
+</section>
