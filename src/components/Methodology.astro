@@ -1,39 +1,15 @@
 ---
-const pasos = [
-  {
-    t: 'Levantamiento de infraestructura',
-    d: 'Mapeo de los sistemas eléctricos de los Bloques A y F en CECAR e identificación de puntos de medición.',
-  },
-  {
-    t: 'Instalación de sensores',
-    d: 'Despliegue de CTs / Bobinas Rogowski conectados al ADE9000 (Clase 0.2) en tableros de distribución.',
-  },
-  {
-    t: 'Pipeline de adquisición',
-    d: 'Configuración del microcontrolador para transmitir datos vía WiFi/UTP hacia el Vatio Laboratory a resolución minutal.',
-  },
-  {
-    t: 'Algoritmos de suavizado',
-    d: 'Implementación y validación de Kalman, Savitzky-Golay y Whittaker. Selección por criterio GCV (sin ground truth). Ganador: Whittaker con λ=10, d=2.',
-  },
-  {
-    t: 'Modelo LSTM',
-    d: 'Entrenamiento de dos variantes (datos suavizados vs. datos ruidosos) y evaluación comparativa contra ground truth con métricas MAE, RMSE y NSE.',
-  },
-  {
-    t: 'Análisis e iteración',
-    d: 'Validación de hipótesis, ajuste de hiperparámetros y preparación de publicaciones científicas (artículos WEA y MDPI).',
-  },
-];
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).methodology;
+const pasos = L.pasos;
 ---
 
 <section id="metodologia" class="relative border-b border-line bg-canvas-2">
   <div class="mx-auto max-w-4xl px-6 py-24">
     <p class="reveal kicker">Measurement Log</p>
-    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Metodología</h2>
+    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{L.h2}</h2>
     <p class="reveal mt-4 text-lg text-muted">
-      Seis etapas que llevan el proyecto del cableado físico al artículo científico — del
-      hierro al insight.
+      {L.intro}
     </p>
 
     <ol class="mt-14" data-stagger>
@@ -44,7 +20,7 @@ const pasos = [
               {String(i + 1).padStart(2, '0')}
             </span>
             <div class="pt-1.5">
-              <p class="mono text-[10px] uppercase tracking-widest text-muted">Etapa {String(i + 1).padStart(2, '0')} / 06</p>
+              <p class="mono text-[10px] uppercase tracking-widest text-muted">{L.stageWord} {String(i + 1).padStart(2, '0')} / 06</p>
               <h3 class="mt-0.5 font-semibold text-ink">{p.t}</h3>
               <p class="mt-1 text-sm leading-relaxed text-muted">{p.d}</p>
             </div>

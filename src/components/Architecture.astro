@@ -1,59 +1,28 @@
 ---
-const nodes = [
-  {
-    name: 'Sensores (CT / Bobinas Rogowski)',
-    desc: 'Captura analógica de corriente en la línea eléctrica',
-    icon: 'M3 12h3l2-7 4 14 2-7h3',
-  },
-  {
-    name: 'ADE9000 (Analog Devices)',
-    desc: 'Front-end analógico de alta precisión — Clase 0.2, 7 ADCs internos',
-    icon: 'M4 4h16v16H4z M9 4v16 M15 4v16',
-  },
-  {
-    name: 'Microcontrolador',
-    desc: 'Empaqueta y transmite datos digitalizados vía SPI',
-    icon: 'M7 7h10v10H7z M2 10h2 M2 14h2 M20 10h2 M20 14h2 M10 2v2 M14 2v2 M10 20v2 M14 20v2',
-  },
-  {
-    name: 'WiFi / UTP',
-    desc: 'Canal de transmisión hacia el servidor de procesamiento',
-    icon: 'M5 12a10 10 0 0 1 14 0 M8.5 15.5a5 5 0 0 1 7 0 M12 19h.01',
-  },
-  {
-    name: 'Vatio Laboratory',
-    desc: 'Servidor central de almacenamiento y procesamiento',
-    icon: 'M4 5h16v6H4z M4 13h16v6H4z M8 8h.01 M8 16h.01',
-  },
-  {
-    name: 'Motor de Suavizado',
-    desc: 'Filtros Kalman, Savitzky-Golay y Whittaker',
-    icon: 'M3 17c3 0 3-10 6-10s3 10 6 10 3-7 6-7',
-  },
-  {
-    name: 'Modelo Predictivo (LSTM)',
-    desc: 'Red neuronal recurrente de 7 capas para predicción energética',
-    icon: 'M5 6a2 2 0 1 0 0-.01 M5 18a2 2 0 1 0 0-.01 M19 12a2 2 0 1 0 0-.01 M7 7l10 4 M7 17l10-4',
-  },
-  {
-    name: 'Visualización',
-    desc: 'Dashboard web interactivo (Next.js + React)',
-    icon: 'M3 4h18v12H3z M8 20h8 M12 16v4',
-  },
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).architecture;
+// Iconos por índice — alineados con L.nodes.
+const icons = [
+  'M3 12h3l2-7 4 14 2-7h3',
+  'M4 4h16v16H4z M9 4v16 M15 4v16',
+  'M7 7h10v10H7z M2 10h2 M2 14h2 M20 10h2 M20 14h2 M10 2v2 M14 2v2 M10 20v2 M14 20v2',
+  'M5 12a10 10 0 0 1 14 0 M8.5 15.5a5 5 0 0 1 7 0 M12 19h.01',
+  'M4 5h16v6H4z M4 13h16v6H4z M8 8h.01 M8 16h.01',
+  'M3 17c3 0 3-10 6-10s3 10 6 10 3-7 6-7',
+  'M5 6a2 2 0 1 0 0-.01 M5 18a2 2 0 1 0 0-.01 M19 12a2 2 0 1 0 0-.01 M7 7l10 4 M7 17l10-4',
+  'M3 4h18v12H3z M8 20h8 M12 16v4',
 ];
+const nodes = L.nodes.map((n, i) => ({ ...n, icon: icons[i] }));
 ---
 
 <section id="arquitectura" class="relative border-b border-line bg-canvas-2">
   <div class="mx-auto max-w-6xl px-6 py-24">
     <p class="reveal kicker">Signal Chain</p>
     <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-      Arquitectura del sistema
+      {L.h2}
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
-      Cada vatio recorre un camino. Desde la pinza que abraza el conductor hasta la
-      gráfica que aparece en pantalla, el dato atraviesa ocho etapas de adquisición,
-      transmisión, depuración y predicción. Nada se mide dos veces; todo se transforma una
-      vez bien.
+      {L.intro}
     </p>
 
     <!-- Riel de instrumentación: scroll-x en móvil, fila en desktop -->
@@ -100,13 +69,13 @@ const nodes = [
     <figure class="reveal mt-14 overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
       <img
         src="/images/transicion-datos.png"
-        alt="Diagrama de la transición de datos del sistema IoT"
+        alt={L.figAlt}
         class="block w-full"
         loading="lazy"
         onerror="this.closest('figure').remove()"
       />
       <figcaption class="border-t border-line px-4 py-3 text-sm text-muted">
-        Transición de datos a través de las capas del sistema IoT — del sensor al servidor.
+        {L.figCaption}
       </figcaption>
     </figure>
   </div>

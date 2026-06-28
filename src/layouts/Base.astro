@@ -1,18 +1,18 @@
 ---
 import '../styles/global.css';
-const { title = 'Sistema Inteligente de Monitoreo de Parámetros Eléctricos — CECAR' } =
-  Astro.props;
+import { t } from '../i18n';
+const locale = Astro.currentLocale ?? 'en';
+const L = t(locale).meta;
+const otherHref = locale === 'es' ? '/' : '/es'; // sólo existe index por idioma
+const { title = L.title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Portafolio académico — sistema inteligente de monitoreo de parámetros eléctricos en bloques universitarios de CECAR. Contenido ilustrativo."
-    />
+    <meta name="description" content={L.description} />
     <title>{title}</title>
     <script is:inline>
       // Aplica el tema antes de pintar para evitar parpadeo (FOUC).
@@ -23,11 +23,23 @@ const { title = 'Sistema Inteligente de Monitoreo de Parámetros Eléctricos —
     </script>
   </head>
   <body class="antialiased">
+    <div class="fixed right-4 top-4 z-50 flex items-center gap-2">
+    <a
+      href={otherHref}
+      aria-label={L.langAria}
+      class="mono inline-flex h-10 items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[11px] font-medium uppercase tracking-widest text-muted shadow-soft transition hover:border-signal hover:text-signal"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20" />
+      </svg>
+      {L.langLabel}
+    </a>
     <button
       id="theme-toggle"
       type="button"
-      aria-label="Cambiar tema claro / oscuro"
-      class="mono fixed right-4 top-4 z-50 inline-flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-3 text-[11px] font-medium uppercase tracking-widest text-muted shadow-soft transition hover:border-signal hover:text-signal"
+      aria-label={L.themeAria}
+      class="mono inline-flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-3 text-[11px] font-medium uppercase tracking-widest text-muted shadow-soft transition hover:border-signal hover:text-signal"
     >
       <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" />
@@ -39,6 +51,7 @@ const { title = 'Sistema Inteligente de Monitoreo de Parámetros Eléctricos —
       <span class="dark:hidden">Light</span>
       <span class="hidden dark:inline">Dark</span>
     </button>
+    </div>
 
     <slot />
 

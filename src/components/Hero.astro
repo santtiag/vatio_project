@@ -1,9 +1,11 @@
 ---
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).hero;
 const metrics = [
-  { prefix: '', value: 2, suffix: '', label: 'Bloques universitarios monitoreados' },
-  { prefix: '', value: 5, suffix: '', label: 'Parámetros eléctricos analizados' },
-  { prefix: 'λ = ', value: 10, suffix: '', label: 'Parámetro óptimo del suavizador Whittaker' },
-  { prefix: '', value: 168, suffix: ' h', label: 'Horizonte máximo de predicción (7 días)' },
+  { prefix: '', value: 2, suffix: '' },
+  { prefix: '', value: 5, suffix: '' },
+  { prefix: 'λ = ', value: 10, suffix: '' },
+  { prefix: '', value: 168, suffix: ' h' },
 ];
 ---
 
@@ -19,35 +21,28 @@ const metrics = [
       <span aria-hidden="true" class="text-line">│</span>
       <span>CH1 · VOLTAGE</span>
       <span aria-hidden="true" class="text-line">│</span>
-      <span>CECAR · ING. DE SISTEMAS</span>
+      <span>{L.statusOrg}</span>
       <span aria-hidden="true" class="text-line">│</span>
-      <span>PROYECTO DE INVESTIGACIÓN</span>
+      <span>{L.statusKind}</span>
     </div>
 
     <h1 class="reveal mt-6 max-w-4xl text-4xl font-bold leading-[1.02] tracking-tight text-ink sm:text-6xl">
-      Sistema Inteligente de Monitoreo de
-      <span class="text-signal glow">Parámetros Eléctricos</span>
+      {L.title1}
+      <span class="text-signal glow">{L.titleAccent}</span>
     </h1>
 
     <p class="reveal mono mt-4 max-w-2xl text-sm uppercase tracking-wider text-muted">
-      Corporación Universitaria del Caribe (CECAR)
+      {L.university}
     </p>
 
-    <p class="reveal mt-6 max-w-3xl text-base leading-relaxed text-soft">
-      Una plataforma que convierte la energía de los edificios universitarios en
-      conocimiento. Sensores de alta precisión capturan el pulso eléctrico de cada bloque,
-      un pipeline de filtrado limpia el ruido inherente a la medición y una red neuronal
-      recurrente <strong class="font-semibold text-ink">aprende a predecir el consumo</strong>
-      con días de anticipación. El objetivo: demostrar que un dato bien suavizado vale más
-      que un dato crudo a la hora de anticipar la demanda energética.
-    </p>
+    <p class="reveal mt-6 max-w-3xl text-base leading-relaxed text-soft" set:html={L.lead} />
 
     <div class="reveal mt-8 flex flex-wrap gap-3 text-sm">
       <a href="#arquitectura" class="mono rounded-md bg-signal px-5 py-2.5 font-medium uppercase tracking-wide text-canvas shadow-soft transition hover:brightness-110">
-        Explorar la arquitectura →
+        {L.ctaArch}
       </a>
       <a href="#suavizado" class="mono rounded-md border border-line bg-surface px-5 py-2.5 font-medium uppercase tracking-wide text-ink transition hover:border-signal hover:text-signal">
-        Ver los algoritmos
+        {L.ctaAlgo}
       </a>
     </div>
 
@@ -59,7 +54,7 @@ const metrics = [
           <span aria-hidden="true">→</span>
           <span class="text-signal">SMOOTHED · WHITTAKER λ=10</span>
         </span>
-        <span class="rounded border border-line px-2 py-0.5">SYNTHETIC · ILUSTRATIVA</span>
+        <span class="rounded border border-line px-2 py-0.5">{L.scopeBadge}</span>
       </div>
       <div class="screen relative">
         <div class="graticule absolute inset-0"></div>
@@ -70,7 +65,7 @@ const metrics = [
     <!-- Fila de readouts -->
     <dl class="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4" data-stagger>
       {
-        metrics.map((m) => (
+        metrics.map((m, i) => (
           <div class="reveal bg-surface p-5">
             <dt class="mono tnum text-3xl font-medium tracking-tight text-signal sm:text-4xl">
               <span
@@ -81,7 +76,7 @@ const metrics = [
                 {m.prefix}0{m.suffix}
               </span>
             </dt>
-            <dd class="mono mt-2 text-[11px] uppercase leading-relaxed tracking-wider text-muted">{m.label}</dd>
+            <dd class="mono mt-2 text-[11px] uppercase leading-relaxed tracking-wider text-muted">{L.metricLabels[i]}</dd>
           </div>
         ))
       }

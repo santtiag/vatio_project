@@ -1,4 +1,6 @@
 ---
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).footer;
 const year = '2025 – 2026';
 ---
 
@@ -6,40 +8,37 @@ const year = '2025 – 2026';
   <div class="mx-auto max-w-6xl px-6 py-16">
     <p class="mono mb-8 flex items-center gap-2 text-[11px] uppercase tracking-widest text-signal">
       <span class="pulse-dot h-2 w-2 rounded-full bg-signal"></span>
-      Ficha técnica
+      {L.sheet}
     </p>
     <div class="reveal grid gap-10 sm:grid-cols-2">
       <div>
-        <p class="mono text-[11px] uppercase tracking-widest text-muted">Proyecto</p>
+        <p class="mono text-[11px] uppercase tracking-widest text-muted">{L.projectLabel}</p>
         <p class="mt-1 text-lg font-semibold text-ink">
-          Sistema Inteligente de Monitoreo de Parámetros Eléctricos
+          {L.projectName}
         </p>
-        <p class="mono mt-4 text-[11px] uppercase tracking-widest text-muted">Institución</p>
-        <p class="mt-1 text-sm">Corporación Universitaria del Caribe — CECAR</p>
+        <p class="mono mt-4 text-[11px] uppercase tracking-widest text-muted">{L.institutionLabel}</p>
+        <p class="mt-1 text-sm">{L.institution}</p>
       </div>
       <div class="space-y-4 text-sm">
         <div>
-          <p class="mono text-[11px] uppercase tracking-widest text-muted">Financiamiento</p>
+          <p class="mono text-[11px] uppercase tracking-widest text-muted">{L.fundingLabel}</p>
           <p class="mt-1">
-            Convocatoria 938 de MINCIENCIAS — «Plataforma Tecnológica Modular de
-            Eficiencia Energética»
+            {L.funding}
           </p>
         </div>
         <div>
-          <p class="mono text-[11px] uppercase tracking-widest text-muted">Autor</p>
+          <p class="mono text-[11px] uppercase tracking-widest text-muted">{L.authorLabel}</p>
           <p class="mt-1">Santiago José Romero Solana</p>
         </div>
         <div>
-          <p class="mono text-[11px] uppercase tracking-widest text-muted">Año</p>
+          <p class="mono text-[11px] uppercase tracking-widest text-muted">{L.yearLabel}</p>
           <p class="mono mt-1 tabular-nums">{year}</p>
         </div>
       </div>
     </div>
 
     <p class="mt-12 border-t border-line pt-6 text-xs leading-relaxed text-muted">
-      Los datos presentados en esta página son representativos e ilustrativos. No reflejan
-      lecturas operacionales en tiempo real ni exponen información de la infraestructura
-      eléctrica de CECAR.
+      {L.disclaimer}
     </p>
   </div>
 </footer>

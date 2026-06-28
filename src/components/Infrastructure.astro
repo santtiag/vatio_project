@@ -1,34 +1,18 @@
 ---
-const bloques = [
-  {
-    nombre: 'Bloque A',
-    carga: 'Aulas y espacios académicos',
-    estado: 'Activo (datos desde junio 2024)',
-    detalle:
-      'Carga de tipo académico con perfil diurno marcado: iluminación, climatización y equipos de cómputo que siguen el ritmo de las clases.',
-    img: '/images/bloque-a.jpg',
-  },
-  {
-    nombre: 'Bloque F',
-    carga: 'Laboratorios y área de evaluación principal',
-    estado: 'Activo (datos desde noviembre 2024)',
-    detalle:
-      'Punto de evaluación principal del proyecto: laboratorios con cargas variables e intensivas, ideales para poner a prueba el suavizado y la predicción.',
-    img: '/images/bloque-f.jpg',
-  },
-];
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).infrastructure;
+const imgs = ['/images/bloque-a.jpg', '/images/bloque-f.jpg'];
+const bloques = L.bloques.map((b, i) => ({ ...b, img: imgs[i] }));
 ---
 
 <section id="infraestructura" class="border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
     <p class="reveal kicker">Sites</p>
     <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-      Infraestructura universitaria
+      {L.h2}
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
-      El estudio se concentra en dos bloques del campus de CECAR, elegidos por sus perfiles
-      de carga complementarios. Se documenta únicamente el tipo de carga y el estado de
-      monitoreo de cada bloque — nunca lecturas operacionales.
+      {L.intro}
     </p>
 
     <div class="mt-14 grid gap-6 sm:grid-cols-2" data-stagger>
@@ -38,7 +22,7 @@ const bloques = [
             <figure class="relative aspect-[16/9] bg-surface-2">
               <img
                 src={b.img}
-                alt={`Fotografía del ${b.nombre} en CECAR`}
+                alt={b.alt}
                 class="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
                 onerror="this.style.display='none'"
@@ -52,10 +36,10 @@ const bloques = [
                 <h3 class="text-xl font-semibold">{b.nombre}</h3>
                 <span class="mono inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-signal">
                   <span class="pulse-dot h-2.5 w-2.5 rounded-full bg-signal" />
-                  Activo
+                  {L.activeBadge}
                 </span>
               </div>
-              <p class="mono mt-4 text-[11px] uppercase tracking-widest text-muted">Tipo de carga</p>
+              <p class="mono mt-4 text-[11px] uppercase tracking-widest text-muted">{L.loadLabel}</p>
               <p class="text-base font-medium text-ink">{b.carga}</p>
               <p class="mt-4 text-sm leading-relaxed text-soft">{b.detalle}</p>
               <p class="mono mt-4 text-[11px] uppercase tracking-wider text-signal">{b.estado}</p>
@@ -69,7 +53,7 @@ const bloques = [
       <svg class="h-4 w-4 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
         <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
       </svg>
-      Datos operacionales anonimizados — lecturas no expuestas
+      {L.privacyNote}
     </p>
   </div>
 </section>

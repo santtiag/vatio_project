@@ -1,57 +1,54 @@
 ---
-const algos = [
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).smoothing;
+// Datos no traducibles (ecuaciones, parámetros, cuál es el mejor) por índice.
+const structural = [
   {
-    nombre: 'Filtro de Kalman',
-    intuicion: 'Estimación bayesiana recursiva: predice, mide y corrige en cada paso.',
-    eqs: [
-      { label: 'Predicción', expr: 'x̂ₖ⁻ = x̂ₖ₋₁ ,    Pₖ⁻ = Pₖ₋₁ + Q' },
-      { label: 'Ganancia', expr: 'Kₖ = Pₖ⁻ / (Pₖ⁻ + R)' },
-      { label: 'Corrección', expr: 'x̂ₖ = x̂ₖ⁻ + Kₖ (zₖ − x̂ₖ⁻)' },
-      { label: 'Covarianza', expr: 'Pₖ = (1 − Kₖ) Pₖ⁻' },
+    exprs: [
+      'x̂ₖ⁻ = x̂ₖ₋₁ ,    Pₖ⁻ = Pₖ₋₁ + Q',
+      'Kₖ = Pₖ⁻ / (Pₖ⁻ + R)',
+      'x̂ₖ = x̂ₖ⁻ + Kₖ (zₖ − x̂ₖ⁻)',
+      'Pₖ = (1 − Kₖ) Pₖ⁻',
     ],
     params: ['Q = process_variance = 0.1', 'R = measurement_variance = 10', 'P₀ = initial_error = 1.0'],
-    nota: 'Cuanto mayor es R frente a Q, más confía el filtro en su predicción y menos en la medición ruidosa.',
     best: false,
   },
   {
-    nombre: 'Savitzky-Golay',
-    intuicion: 'Ajusta un polinomio local por mínimos cuadrados y evalúa su centro: suaviza sin aplanar los picos.',
-    eqs: [
-      { label: 'Convolución', expr: 'ŷᵢ = Σⱼ cⱼ · yᵢ₊ⱼ ,   j = −m … m,   2m+1 = 31' },
-      { label: 'Coeficientes', expr: 'C = (Aᵀ A)⁻¹ Aᵀ ,   Aᵢⱼ = jⁱ' },
-      { label: 'Ventana', expr: 'A ∈ Vandermonde,   grado p = 2' },
+    exprs: [
+      'ŷᵢ = Σⱼ cⱼ · yᵢ₊ⱼ ,   j = −m … m,   2m+1 = 31',
+      'C = (Aᵀ A)⁻¹ Aᵀ ,   Aᵢⱼ = jⁱ',
+      'A ∈ Vandermonde,   grado p = 2',
     ],
     params: ['window_length = 31', 'polyorder = 2'],
-    nota: 'A es la matriz de Vandermonde de la ventana; la fila central de C da los pesos de suavizado.',
     best: false,
   },
   {
-    nombre: 'Whittaker',
-    intuicion: 'Equilibra fidelidad al dato y suavidad penalizando la d-ésima derivada de la señal estimada.',
-    eqs: [
-      { label: 'Funcional', expr: 'Q(z) = ‖y − z‖² + λ ‖Dᵈ z‖²' },
-      { label: 'Solución', expr: 'z = (I + λ Dᵈᵀ Dᵈ)⁻¹ y' },
-      { label: 'Selección (GCV)', expr: 'GCV(λ) = n‖y − z‖² / (n − tr H)² ,  H = (I + λ DᵀD)⁻¹' },
+    exprs: [
+      'Q(z) = ‖y − z‖² + λ ‖Dᵈ z‖²',
+      'z = (I + λ Dᵈᵀ Dᵈ)⁻¹ y',
+      'GCV(λ) = n‖y − z‖² / (n − tr H)² ,  H = (I + λ DᵀD)⁻¹',
     ],
     params: ['λ = 10', 'd = 2', 'GCV = 11.1403  (mínimo)'],
-    nota: 'λ se elige minimizando GCV — sin ground truth. Dᵈ es la matriz de diferencias de orden d.',
     best: true,
   },
 ];
+const algos = L.algos.map((a, i) => ({
+  nombre: a.nombre,
+  intuicion: a.intuicion,
+  nota: a.nota,
+  best: structural[i].best,
+  params: structural[i].params,
+  eqs: a.eqLabels.map((label, j) => ({ label, expr: structural[i].exprs[j] })),
+}));
 ---
 
 <section id="suavizado" class="relative border-b border-line bg-canvas-2">
   <div class="mx-auto max-w-6xl px-6 py-24">
     <p class="reveal kicker">Signal Conditioning</p>
     <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-      Algoritmos de suavizado
+      {L.h2}
     </h2>
-    <p class="reveal mt-4 max-w-3xl text-lg text-muted">
-      Toda medición eléctrica llega con ruido. Antes de predecir, hay que decidir cómo
-      limpiarla — y hacerlo <strong class="font-semibold text-ink">sin conocer la verdad de
-      fondo</strong>. Se comparan tres formulaciones clásicas y se selecciona la mejor por
-      validación cruzada generalizada (GCV), un criterio que no necesita ground truth.
-    </p>
+    <p class="reveal mt-4 max-w-3xl text-lg text-muted" set:html={L.intro} />
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3" data-stagger>
       {
@@ -61,7 +58,7 @@ const algos = [
           >
             {a.best && (
               <span class="mono absolute -top-3 right-5 rounded border border-signal bg-signal px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-canvas shadow-soft">
-                ★ Mejor GCV
+                {L.bestBadge}
               </span>
             )}
             <h3 class="text-lg font-semibold">{a.nombre}</h3>
@@ -94,9 +91,9 @@ const algos = [
 
     <div class="reveal scanline mt-14 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h3 class="font-semibold">Comparativa de filtros sobre señal sintética</h3>
+        <h3 class="font-semibold">{L.chartTitle}</h3>
         <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
-          Escala ilustrativa
+          {L.illustrativeScale}
         </span>
       </div>
       <canvas id="chart-smoothing" height="120"></canvas>
@@ -116,6 +113,14 @@ const algos = [
   const whit = smooth(raw, 8);
   const labels = Array.from({ length: N }, (_, i) => i); // minutos
   const el = document.getElementById('chart-smoothing') as HTMLCanvasElement;
+  // Etiquetas del chart según el idioma de la página (no se reanima al traducir).
+  const es = document.documentElement.lang === 'es';
+  const txt = {
+    raw: es ? 'Señal original (ruidosa)' : 'Original signal (noisy)',
+    whittaker: es ? 'Whittaker (λ=10)' : 'Whittaker (λ=10)',
+    xAxis: es ? 'Tiempo (minutos)' : 'Time (minutes)',
+    yAxis: es ? 'Corriente (A)' : 'Current (A)',
+  };
   let chart: Chart | null = null;
 
   function build(animate = true) {
@@ -128,10 +133,10 @@ const algos = [
       data: {
         labels,
         datasets: [
-          { label: 'Señal original (ruidosa)', data: raw, borderColor: c.amber + '88', borderWidth: 1, pointRadius: 0, tension: 0 },
+          { label: txt.raw, data: raw, borderColor: c.amber + '88', borderWidth: 1, pointRadius: 0, tension: 0 },
           { label: 'Kalman', data: kal, borderColor: c.muted, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
           { label: 'Savitzky-Golay', data: sav, borderColor: c.amber, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
-          { label: 'Whittaker (λ=10)', data: whit, borderColor: c.signal, borderWidth: 3, pointRadius: 0, tension: 0.3 },
+          { label: txt.whittaker, data: whit, borderColor: c.signal, borderWidth: 3, pointRadius: 0, tension: 0.3 },
         ],
       },
       options: {
@@ -142,8 +147,8 @@ const algos = [
         transitions: { show: { animation: { duration: 1800 } } },
         plugins: { legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } } },
         scales: {
-          x: { title: { display: true, text: 'Tiempo (minutos)' }, ticks: { maxTicksLimit: 10 }, grid: { display: false } },
-          y: { title: { display: true, text: 'Corriente (A)' } },
+          x: { title: { display: true, text: txt.xAxis }, ticks: { maxTicksLimit: 10 }, grid: { display: false } },
+          y: { title: { display: true, text: txt.yAxis } },
         },
       },
     });

@@ -1,49 +1,37 @@
 ---
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).lstm;
 const layers = ['Input', 'LSTM 1', 'Dropout 1', 'LSTM 2', 'Dropout 2', 'Dense 1', 'Dense Output'];
-const features = [
-  { n: 'Voltaje', u: 'V' },
-  { n: 'Corriente', u: 'A' },
-  { n: 'Potencia Activa', u: 'W' },
-  { n: 'Potencia Reactiva', u: 'VAR' },
-  { n: 'Factor de Potencia', u: 'adimensional' },
-];
-const objetivos = [
-  { m: 'MAE', v: '< 3%' },
-  { m: 'RMSE', v: '< 5%' },
-  { m: 'NSE', v: '> 0.90' },
-  { m: 'MSE', v: 'secundaria' },
-];
+const features = L.featureNames.map((n, i) => ({ n, u: L.featureUnits[i] }));
+const objetivos = L.objetivos;
 ---
 
 <section id="modelo" class="border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
     <p class="reveal kicker">Forecast Engine</p>
     <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-      Modelo predictivo <span class="text-signal glow">LSTM</span>
+      {L.titlePre}<span class="text-signal glow">LSTM</span>{L.titlePost}
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
-      Una red neuronal recurrente de 7 capas que recuerda el pasado para anticipar el
-      futuro. Las celdas LSTM capturan la dinámica temporal del consumo — los ciclos
-      diarios, los picos de laboratorio, las caídas nocturnas — y proyectan la demanda
-      energética con hasta una semana de anticipación.
+      {L.intro}
     </p>
 
     <!-- Figura opcional: arquitectura del modelo LSTM. Suelta el archivo y aparece. -->
     <figure class="reveal mt-12 overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
       <img
         src="/images/lstm-arquitectura.png"
-        alt="Diagrama de la arquitectura del modelo LSTM de 7 capas"
+        alt={L.figAlt}
         class="block w-full"
         loading="lazy"
         onerror="this.closest('figure').remove()"
       />
       <figcaption class="border-t border-line px-4 py-3 text-sm text-muted">
-        Arquitectura del modelo LSTM — flujo de capas de entrada a predicción.
+        {L.figCaption}
       </figcaption>
     </figure>
 
     <div class="reveal mt-12">
-      <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Arquitectura — 7 capas</p>
+      <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">{L.archLabel}</p>
       <div class="flex flex-wrap items-center gap-2" data-stagger>
         {
           layers.map((l, i) => (
@@ -60,7 +48,7 @@ const objetivos = [
 
     <div class="mt-14 grid gap-8 lg:grid-cols-2">
       <div class="reveal">
-        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Features de entrada — 5 parámetros</p>
+        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">{L.featuresLabel}</p>
         <ul class="space-y-2" data-stagger>
           {
             features.map((f) => (
@@ -73,7 +61,7 @@ const objetivos = [
         </ul>
       </div>
       <div class="reveal">
-        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">Métricas objetivo del modelo</p>
+        <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">{L.metricsLabel}</p>
         <div class="grid grid-cols-2 gap-3" data-stagger>
           {
             objetivos.map((o) => (
@@ -92,20 +80,18 @@ const objetivos = [
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
         </svg>
-        Hipótesis del sistema
+        {L.hypothesisLabel}
       </p>
       <p class="mt-2 text-base leading-relaxed text-ink">
-        El modelo entrenado con datos suavizados (Whittaker, λ = 10) supera
-        estadísticamente al modelo entrenado con datos ruidosos, al evaluarse contra el
-        ground truth.
+        {L.hypothesis}
       </p>
     </div>
 
     <div class="reveal scanline mt-10 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h3 class="font-semibold">Valores reales vs. predichos</h3>
+        <h3 class="font-semibold">{L.chartTitle}</h3>
         <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
-          Escala ilustrativa
+          {L.illustrativeScale}
         </span>
       </div>
       <canvas id="chart-lstm" height="110"></canvas>
@@ -121,6 +107,13 @@ const objetivos = [
   const { real, pred } = realVsPredicted(48, 5);
   const labels = Array.from({ length: real.length }, (_, i) => `t${i + 1}`);
   const el = document.getElementById('chart-lstm') as HTMLCanvasElement;
+  const es = document.documentElement.lang === 'es';
+  const txt = {
+    real: es ? 'Real' : 'Actual',
+    pred: es ? 'Predicho' : 'Predicted',
+    xAxis: es ? 'Ventana de tiempo (genérica)' : 'Time window (generic)',
+    yAxis: es ? 'Potencia (escala ilustrativa)' : 'Power (illustrative scale)',
+  };
   let chart: Chart | null = null;
 
   function build(animate = true) {
@@ -133,8 +126,8 @@ const objetivos = [
       data: {
         labels,
         datasets: [
-          { label: 'Real', data: real, borderColor: c.muted, borderWidth: 2, pointRadius: 0, tension: 0.3 },
-          { label: 'Predicho', data: pred, borderColor: c.signal, borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.3, fill: { target: '-1', above: c.signal + '14', below: c.signal + '14' } },
+          { label: txt.real, data: real, borderColor: c.muted, borderWidth: 2, pointRadius: 0, tension: 0.3 },
+          { label: txt.pred, data: pred, borderColor: c.signal, borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.3, fill: { target: '-1', above: c.signal + '14', below: c.signal + '14' } },
         ],
       },
       options: {
@@ -143,8 +136,8 @@ const objetivos = [
         animation: animate ? { duration: 2000, easing: 'easeInOutQuart' } : false,
         plugins: { legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } } },
         scales: {
-          x: { title: { display: true, text: 'Ventana de tiempo (genérica)' }, ticks: { maxTicksLimit: 8 }, grid: { display: false } },
-          y: { title: { display: true, text: 'Potencia (escala ilustrativa)' } },
+          x: { title: { display: true, text: txt.xAxis }, ticks: { maxTicksLimit: 8 }, grid: { display: false } },
+          y: { title: { display: true, text: txt.yAxis } },
         },
       },
     });
