@@ -12,13 +12,23 @@ const es = {
     langAria: 'Cambiar idioma a inglés',
     langLabel: 'EN',
   },
+  nav: {
+    links: [
+      { href: '#arquitectura', label: 'Arquitectura' },
+      { href: '#infraestructura', label: 'Infraestructura' },
+      { href: '#groundtruth', label: 'Ground truth' },
+      { href: '#suavizado', label: 'Suavizado' },
+      { href: '#modelo', label: 'Modelo' },
+      { href: '#metodologia', label: 'Metodología' },
+    ],
+  },
   hero: {
     statusOrg: 'CECAR · ING. DE SISTEMAS',
     statusKind: 'PROYECTO DE INVESTIGACIÓN',
     title1: 'Sistema Inteligente de Monitoreo de',
     titleAccent: 'Parámetros Eléctricos',
     university: 'Corporación Universitaria del Caribe (CECAR)',
-    lead: 'Una plataforma que convierte la energía de los edificios universitarios en conocimiento. Sensores de alta precisión capturan el pulso eléctrico de cada bloque, un pipeline de filtrado limpia el ruido inherente a la medición y una red neuronal recurrente <strong class="font-semibold text-ink">aprende a predecir el consumo</strong> con días de anticipación. El objetivo: demostrar que un dato bien suavizado vale más que un dato crudo a la hora de anticipar la demanda energética.',
+    lead: 'Una plataforma que convierte la energía de los edificios universitarios en conocimiento. Sensores de alta precisión capturan el pulso eléctrico de cada bloque, un pipeline de filtrado limpia el ruido inherente a la medición y una red neuronal recurrente <strong class="font-semibold text-ink">aprende a predecir el consumo</strong> con días de anticipación. El objetivo: demostrar, contra una señal de referencia medida antes del sensor (<em>ground truth</em>), que un dato bien suavizado vale más que un dato crudo a la hora de anticipar la demanda energética.',
     ctaArch: 'Explorar la arquitectura →',
     ctaAlgo: 'Ver los algoritmos',
     scopeBadge: 'SYNTHETIC · ILUSTRATIVA',
@@ -72,11 +82,48 @@ const es = {
       },
     ],
   },
+  groundtruth: {
+    h2: 'Ground truth y pipeline de validación',
+    intro:
+      'Para saber si limpiar el ruido mejora la predicción hace falta una vara de medir: una señal de referencia tomada directamente del panel eléctrico, <strong class="font-semibold text-ink">antes</strong> de la cadena de sensores que introduce el ruido. Contra esa referencia (S<sub>ref</sub>) se selecciona el suavizador y se evalúan los modelos predictivos.',
+    signals: [
+      {
+        sym: 'S_ref',
+        name: 'Señal de referencia (ground truth)',
+        desc: 'Tomada en el panel eléctrico, antes de los sensores externos. Mientras no exista S_ref físico pareado, se reconstruye con una mediana móvil (ventana de 5 muestras ≈ 5 min) que elimina el ruido impulsivo muestra a muestra preservando los escalones reales de carga.',
+      },
+      {
+        sym: 'S_acq',
+        name: 'Señal adquirida (ruidosa)',
+        desc: 'Capturada por la cadena completa CT/Rogowski → ADE9000 → microcontrolador. Arrastra el ruido del acondicionamiento externo: cableado, interferencia electromagnética, tierras compartidas, contactos oxidados.',
+      },
+      {
+        sym: 'S_sm',
+        name: 'Señal suavizada',
+        desc: 'Resultado de aplicar Whittaker (λ = 2, d = 2) sobre S_acq. El λ no se elige a ciegas: se selecciona minimizando el RMSE contra S_ref — selección supervisada contra la referencia.',
+      },
+    ],
+    abTitle: 'Experimento A/B',
+    laneA: ['S_acq', 'Whittaker λ=2', 'S_sm', 'LSTM · Modelo A'],
+    laneB: ['S_acq', 'LSTM · Modelo B'],
+    laneALabel: 'Rama A — datos suavizados',
+    laneBLabel: 'Rama B — datos crudos (baseline)',
+    evalNote: 'Ambos modelos se evalúan contra S_ref con RMSE, MAE, MSE y NSE. Si el Modelo A gana, el suavizado paga.',
+    chartTitle: 'Las tres señales del pipeline',
+    illustrativeScale: 'Escala ilustrativa',
+    chart: {
+      ref: 'S_ref (ground truth)',
+      acq: 'S_acq (adquirida)',
+      sm: 'S_sm (Whittaker λ=2)',
+      xAxis: 'Tiempo (minutos)',
+      yAxis: 'Corriente (A)',
+    },
+  },
   smoothing: {
     h2: 'Algoritmos de suavizado',
     intro:
-      'Toda medición eléctrica llega con ruido. Antes de predecir, hay que decidir cómo limpiarla — y hacerlo <strong class="font-semibold text-ink">sin conocer la verdad de fondo</strong>. Se comparan tres formulaciones clásicas y se selecciona la mejor por validación cruzada generalizada (GCV), un criterio que no necesita ground truth.',
-    bestBadge: '★ Mejor GCV',
+      'Toda medición eléctrica llega con ruido. Antes de predecir, hay que decidir cómo limpiarla — y aquí la decisión no es a ciegas: se comparan tres formulaciones clásicas con <strong class="font-semibold text-ink">métricas supervisadas contra el ground truth</strong> (RMSE, MAE, mejora de SNR, R²). Gana quien más se acerca a la señal de referencia, no quien más bonita deja la curva.',
+    bestBadge: '★ Menor RMSE vs S_ref',
     chartTitle: 'Comparativa de filtros sobre señal sintética',
     illustrativeScale: 'Escala ilustrativa',
     algos: [
@@ -95,13 +142,13 @@ const es = {
       {
         nombre: 'Whittaker',
         intuicion: 'Equilibra fidelidad al dato y suavidad penalizando la d-ésima derivada de la señal estimada.',
-        eqLabels: ['Funcional', 'Solución', 'Selección (GCV)'],
-        nota: 'λ se elige minimizando GCV — sin ground truth. Dᵈ es la matriz de diferencias de orden d.',
+        eqLabels: ['Funcional', 'Solución', 'Selección (vs S_ref)'],
+        nota: 'λ se elige minimizando el RMSE contra la señal de referencia S_ref. Dᵈ es la matriz de diferencias de orden d.',
       },
     ],
     chart: {
       raw: 'Señal original (ruidosa)',
-      whittaker: 'Whittaker (λ=10)',
+      whittaker: 'Whittaker (λ=2)',
       xAxis: 'Tiempo (minutos)',
       yAxis: 'Corriente (A)',
     },
@@ -110,7 +157,7 @@ const es = {
     titlePre: 'Modelo predictivo ',
     titlePost: '',
     intro:
-      'Una red neuronal recurrente de 7 capas que recuerda el pasado para anticipar el futuro. Las celdas LSTM capturan la dinámica temporal del consumo — los ciclos diarios, los picos de laboratorio, las caídas nocturnas — y proyectan la demanda energética con hasta una semana de anticipación.',
+      'Una red neuronal recurrente de 7 capas que recuerda el pasado para anticipar el futuro. Las celdas LSTM capturan la dinámica temporal del consumo — los ciclos diarios, los picos de laboratorio, las caídas nocturnas. Trabaja a resolución de 10 minutos: una ventana de entrada de 288 muestras (48 h) proyecta las siguientes 144 (24 h), y de forma recursiva extiende la predicción hasta 7 días.',
     figAlt: 'Diagrama de la arquitectura del modelo LSTM de 7 capas',
     figCaption: 'Arquitectura del modelo LSTM — flujo de capas de entrada a predicción.',
     archLabel: 'Arquitectura — 7 capas',
@@ -126,7 +173,7 @@ const es = {
     ],
     hypothesisLabel: 'Hipótesis del sistema',
     hypothesis:
-      'El modelo entrenado con datos suavizados (Whittaker, λ = 10) supera estadísticamente al modelo entrenado con datos ruidosos, al evaluarse contra el ground truth.',
+      'El Modelo A, entrenado con datos suavizados (Whittaker, λ = 2), supera estadísticamente al Modelo B, entrenado con datos ruidosos, al evaluarse ambos contra el ground truth (S_ref).',
     chartTitle: 'Valores reales vs. predichos',
     illustrativeScale: 'Escala ilustrativa',
     chart: {
@@ -145,8 +192,8 @@ const es = {
       { t: 'Levantamiento de infraestructura', d: 'Mapeo de los sistemas eléctricos de los Bloques A y F en CECAR e identificación de puntos de medición.' },
       { t: 'Instalación de sensores', d: 'Despliegue de CTs / Bobinas Rogowski conectados al ADE9000 (Clase 0.2) en tableros de distribución.' },
       { t: 'Pipeline de adquisición', d: 'Configuración del microcontrolador para transmitir datos vía WiFi/UTP hacia el Vatio Laboratory a resolución minutal.' },
-      { t: 'Algoritmos de suavizado', d: 'Implementación y validación de Kalman, Savitzky-Golay y Whittaker. Selección por criterio GCV (sin ground truth). Ganador: Whittaker con λ=10, d=2.' },
-      { t: 'Modelo LSTM', d: 'Entrenamiento de dos variantes (datos suavizados vs. datos ruidosos) y evaluación comparativa contra ground truth con métricas MAE, RMSE y NSE.' },
+      { t: 'Ground truth y suavizado', d: 'Implementación de Kalman, Savitzky-Golay y Whittaker. Selección supervisada contra la señal de referencia S_ref por mínimo RMSE. Ganador: Whittaker con λ=2, d=2.' },
+      { t: 'Modelo LSTM', d: 'Entrenamiento de dos variantes — Modelo A (datos suavizados) y Modelo B (datos ruidosos) — y evaluación comparativa contra el ground truth con métricas MAE, RMSE, MSE y NSE.' },
       { t: 'Análisis e iteración', d: 'Validación de hipótesis, ajuste de hiperparámetros y preparación de publicaciones científicas (artículos WEA y MDPI).' },
     ],
   },
@@ -174,13 +221,23 @@ const en: typeof es = {
     langAria: 'Switch language to Spanish',
     langLabel: 'ES',
   },
+  nav: {
+    links: [
+      { href: '#arquitectura', label: 'Architecture' },
+      { href: '#infraestructura', label: 'Infrastructure' },
+      { href: '#groundtruth', label: 'Ground truth' },
+      { href: '#suavizado', label: 'Smoothing' },
+      { href: '#modelo', label: 'Model' },
+      { href: '#metodologia', label: 'Methodology' },
+    ],
+  },
   hero: {
     statusOrg: 'CECAR · SYSTEMS ENG.',
     statusKind: 'RESEARCH PROJECT',
     title1: 'Intelligent Monitoring System for',
     titleAccent: 'Electrical Parameters',
     university: 'Corporación Universitaria del Caribe (CECAR)',
-    lead: 'A platform that turns the energy of university buildings into knowledge. High-precision sensors capture the electrical pulse of each block, a filtering pipeline cleans the noise inherent to measurement, and a recurrent neural network <strong class="font-semibold text-ink">learns to predict consumption</strong> days in advance. The goal: to show that well-smoothed data is worth more than raw data when anticipating energy demand.',
+    lead: 'A platform that turns the energy of university buildings into knowledge. High-precision sensors capture the electrical pulse of each block, a filtering pipeline cleans the noise inherent to measurement, and a recurrent neural network <strong class="font-semibold text-ink">learns to predict consumption</strong> days in advance. The goal: to show — against a reference signal measured before the sensor (<em>ground truth</em>) — that well-smoothed data is worth more than raw data when anticipating energy demand.',
     ctaArch: 'Explore the architecture →',
     ctaAlgo: 'View the algorithms',
     scopeBadge: 'SYNTHETIC · ILLUSTRATIVE',
@@ -234,11 +291,48 @@ const en: typeof es = {
       },
     ],
   },
+  groundtruth: {
+    h2: 'Ground truth & validation pipeline',
+    intro:
+      'To know whether cleaning the noise improves prediction, you need a measuring stick: a reference signal taken directly from the electrical panel, <strong class="font-semibold text-ink">before</strong> the sensor chain that introduces the noise. Against that reference (S<sub>ref</sub>) the smoother is selected and the predictive models are evaluated.',
+    signals: [
+      {
+        sym: 'S_ref',
+        name: 'Reference signal (ground truth)',
+        desc: 'Taken at the electrical panel, before the external sensors. Until a paired physical S_ref exists, it is reconstructed with a moving median (5-sample window ≈ 5 min) that removes sample-to-sample impulsive noise while preserving real load steps.',
+      },
+      {
+        sym: 'S_acq',
+        name: 'Acquired signal (noisy)',
+        desc: 'Captured by the full chain CT/Rogowski → ADE9000 → microcontroller. It carries the noise of the external conditioning: wiring, electromagnetic interference, shared grounds, oxidized contacts.',
+      },
+      {
+        sym: 'S_sm',
+        name: 'Smoothed signal',
+        desc: 'The result of applying Whittaker (λ = 2, d = 2) to S_acq. λ is not chosen blindly: it is selected by minimizing RMSE against S_ref — supervised selection against the reference.',
+      },
+    ],
+    abTitle: 'A/B experiment',
+    laneA: ['S_acq', 'Whittaker λ=2', 'S_sm', 'LSTM · Model A'],
+    laneB: ['S_acq', 'LSTM · Model B'],
+    laneALabel: 'Branch A — smoothed data',
+    laneBLabel: 'Branch B — raw data (baseline)',
+    evalNote: 'Both models are evaluated against S_ref with RMSE, MAE, MSE, and NSE. If Model A wins, the smoothing pays off.',
+    chartTitle: 'The three signals of the pipeline',
+    illustrativeScale: 'Illustrative scale',
+    chart: {
+      ref: 'S_ref (ground truth)',
+      acq: 'S_acq (acquired)',
+      sm: 'S_sm (Whittaker λ=2)',
+      xAxis: 'Time (minutes)',
+      yAxis: 'Current (A)',
+    },
+  },
   smoothing: {
     h2: 'Smoothing algorithms',
     intro:
-      'Every electrical measurement arrives with noise. Before predicting, you must decide how to clean it — and do so <strong class="font-semibold text-ink">without knowing the underlying truth</strong>. Three classic formulations are compared and the best is selected by generalized cross-validation (GCV), a criterion that needs no ground truth.',
-    bestBadge: '★ Best GCV',
+      'Every electrical measurement arrives with noise. Before predicting, you must decide how to clean it — and here the decision is not blind: three classic formulations are compared with <strong class="font-semibold text-ink">supervised metrics against the ground truth</strong> (RMSE, MAE, SNR improvement, R²). The winner is the one closest to the reference signal, not the one that makes the prettiest curve.',
+    bestBadge: '★ Lowest RMSE vs S_ref',
     chartTitle: 'Filter comparison on a synthetic signal',
     illustrativeScale: 'Illustrative scale',
     algos: [
@@ -257,13 +351,13 @@ const en: typeof es = {
       {
         nombre: 'Whittaker',
         intuicion: 'Balances data fidelity and smoothness by penalizing the d-th derivative of the estimated signal.',
-        eqLabels: ['Functional', 'Solution', 'Selection (GCV)'],
-        nota: 'λ is chosen by minimizing GCV — no ground truth. Dᵈ is the difference matrix of order d.',
+        eqLabels: ['Functional', 'Solution', 'Selection (vs S_ref)'],
+        nota: 'λ is chosen by minimizing RMSE against the reference signal S_ref. Dᵈ is the difference matrix of order d.',
       },
     ],
     chart: {
       raw: 'Original signal (noisy)',
-      whittaker: 'Whittaker (λ=10)',
+      whittaker: 'Whittaker (λ=2)',
       xAxis: 'Time (minutes)',
       yAxis: 'Current (A)',
     },
@@ -272,7 +366,7 @@ const en: typeof es = {
     titlePre: '',
     titlePost: ' predictive model',
     intro:
-      'A 7-layer recurrent neural network that remembers the past to anticipate the future. LSTM cells capture the temporal dynamics of consumption — daily cycles, laboratory peaks, nighttime drops — and project energy demand up to a week in advance.',
+      'A 7-layer recurrent neural network that remembers the past to anticipate the future. LSTM cells capture the temporal dynamics of consumption — daily cycles, laboratory peaks, nighttime drops. It works at 10-minute resolution: an input window of 288 samples (48 h) projects the next 144 (24 h), and recursively extends the forecast up to 7 days.',
     figAlt: 'Diagram of the 7-layer LSTM model architecture',
     figCaption: 'LSTM model architecture — layer flow from input to prediction.',
     archLabel: 'Architecture — 7 layers',
@@ -288,7 +382,7 @@ const en: typeof es = {
     ],
     hypothesisLabel: 'System hypothesis',
     hypothesis:
-      'The model trained on smoothed data (Whittaker, λ = 10) statistically outperforms the model trained on noisy data when evaluated against the ground truth.',
+      'Model A, trained on smoothed data (Whittaker, λ = 2), statistically outperforms Model B, trained on noisy data, when both are evaluated against the ground truth (S_ref).',
     chartTitle: 'Actual vs. predicted values',
     illustrativeScale: 'Illustrative scale',
     chart: {
@@ -307,8 +401,8 @@ const en: typeof es = {
       { t: 'Infrastructure survey', d: 'Mapping the electrical systems of Blocks A and F at CECAR and identifying measurement points.' },
       { t: 'Sensor installation', d: 'Deployment of CTs / Rogowski coils connected to the ADE9000 (Class 0.2) in distribution boards.' },
       { t: 'Acquisition pipeline', d: 'Configuring the microcontroller to transmit data over WiFi/UTP to the Vatio Laboratory at minute resolution.' },
-      { t: 'Smoothing algorithms', d: 'Implementation and validation of Kalman, Savitzky-Golay, and Whittaker. Selection by GCV criterion (no ground truth). Winner: Whittaker with λ=10, d=2.' },
-      { t: 'LSTM model', d: 'Training two variants (smoothed vs. noisy data) and comparative evaluation against ground truth with MAE, RMSE, and NSE metrics.' },
+      { t: 'Ground truth & smoothing', d: 'Implementation of Kalman, Savitzky-Golay, and Whittaker. Supervised selection against the reference signal S_ref by minimum RMSE. Winner: Whittaker with λ=2, d=2.' },
+      { t: 'LSTM model', d: 'Training two variants — Model A (smoothed data) and Model B (noisy data) — and comparative evaluation against the ground truth with MAE, RMSE, MSE, and NSE metrics.' },
       { t: 'Analysis and iteration', d: 'Hypothesis validation, hyperparameter tuning, and preparation of scientific publications (WEA and MDPI papers).' },
     ],
   },

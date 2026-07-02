@@ -4,7 +4,7 @@ const L = t(Astro.currentLocale).hero;
 const metrics = [
   { prefix: '', value: 2, suffix: '' },
   { prefix: '', value: 5, suffix: '' },
-  { prefix: 'λ = ', value: 10, suffix: '' },
+  { prefix: 'λ = ', value: 2, suffix: '' },
   { prefix: '', value: 168, suffix: ' h' },
 ];
 ---
@@ -52,7 +52,7 @@ const metrics = [
         <span class="flex items-center gap-2">
           <span class="text-amber">RAW</span>
           <span aria-hidden="true">→</span>
-          <span class="text-signal">SMOOTHED · WHITTAKER λ=10</span>
+          <span class="text-signal">SMOOTHED · WHITTAKER λ=2</span>
         </span>
         <span class="rounded border border-line px-2 py-0.5">{L.scopeBadge}</span>
       </div>

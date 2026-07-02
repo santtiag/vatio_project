@@ -26,9 +26,9 @@ const structural = [
     exprs: [
       'Q(z) = ‖y − z‖² + λ ‖Dᵈ z‖²',
       'z = (I + λ Dᵈᵀ Dᵈ)⁻¹ y',
-      'GCV(λ) = n‖y − z‖² / (n − tr H)² ,  H = (I + λ DᵀD)⁻¹',
+      'λ* = argmin RMSE(S_ref, z_λ)  →  λ* = 2',
     ],
-    params: ['λ = 10', 'd = 2', 'GCV = 11.1403  (mínimo)'],
+    params: ['λ = 2', 'd = 2', 'RMSE mínimo vs S_ref'],
     best: true,
   },
 ];
@@ -117,7 +117,7 @@ const algos = L.algos.map((a, i) => ({
   const es = document.documentElement.lang === 'es';
   const txt = {
     raw: es ? 'Señal original (ruidosa)' : 'Original signal (noisy)',
-    whittaker: es ? 'Whittaker (λ=10)' : 'Whittaker (λ=10)',
+    whittaker: 'Whittaker (λ=2)',
     xAxis: es ? 'Tiempo (minutos)' : 'Time (minutes)',
     yAxis: es ? 'Corriente (A)' : 'Current (A)',
   };

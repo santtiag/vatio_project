@@ -11,6 +11,7 @@ export function themeColors() {
     amber: v('--color-amber', '#a85d12'),
     graphite: v('--color-graphite', '#2b3340'),
     muted: v('--color-muted', '#5c6470'),
+    ink: v('--color-ink', '#161a20'),
     // grilla/ejes de Chart.js, tenue
     gridLine: dark ? 'rgba(58,70,84,0.4)' : 'rgba(43,51,64,0.12)',
   };

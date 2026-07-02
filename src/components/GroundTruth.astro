@@ -1,0 +1,161 @@
+---
+import { t } from '../i18n';
+const L = t(Astro.currentLocale).groundtruth;
+// Acento por señal: ref = ink (verdad neutra), acq = amber (ruidosa), sm = signal (limpia).
+const tone = ['text-ink border-ink', 'text-amber border-amber', 'text-signal border-signal'];
+const signals = L.signals.map((s, i) => ({ ...s, tone: tone[i] }));
+---
+
+<section id="groundtruth" class="relative border-b border-line bg-canvas">
+  <div class="mx-auto max-w-6xl px-6 py-24">
+    <p class="reveal kicker">Reference Signal</p>
+    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{L.h2}</h2>
+    <p class="reveal mt-4 max-w-3xl text-lg text-muted" set:html={L.intro} />
+
+    <!-- Tres señales del pipeline -->
+    <div class="mt-14 grid gap-6 lg:grid-cols-3" data-stagger>
+      {
+        signals.map((s) => (
+          <div class="reveal card-lift instrument flex flex-col p-6 shadow-soft">
+            <span class={`mono inline-block self-start rounded border bg-surface-2 px-2.5 py-1 text-sm font-semibold ${s.tone}`}>
+              {s.sym}
+            </span>
+            <h3 class="mt-3 text-base font-semibold leading-snug">{s.name}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{s.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Diagrama del experimento A/B -->
+    <div class="reveal mt-14 instrument p-6 shadow-soft sm:p-8">
+      <p class="mono mb-6 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-signal">
+        <span class="pulse-dot h-2 w-2 rounded-full bg-signal"></span>
+        {L.abTitle}
+      </p>
+
+      <div class="space-y-6">
+        <!-- Rama A -->
+        <div>
+          <p class="mono mb-2 text-[10px] uppercase tracking-widest text-signal">{L.laneALabel}</p>
+          <div class="-mx-2 overflow-x-auto px-2">
+            <div class="flex min-w-max items-center gap-1">
+              {
+                L.laneA.map((node, i) => (
+                  <>
+                    <span class={`mono rounded border px-3 py-2 text-xs font-medium uppercase tracking-wide ${i === 0 ? 'border-amber bg-surface-2 text-amber' : 'border-signal bg-signal-soft text-signal'}`}>
+                      {node}
+                    </span>
+                    {i < L.laneA.length - 1 && (
+                      <svg width="30" height="14" viewBox="0 0 30 14" fill="none" aria-hidden="true" class="flex-none">
+                        <line x1="2" y1="7" x2="22" y2="7" stroke="var(--color-signal)" stroke-width="2" class="flow-line" />
+                        <path d="M20 3l6 4-6 4" stroke="var(--color-signal)" stroke-width="2" fill="none" />
+                      </svg>
+                    )}
+                  </>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Rama B -->
+        <div>
+          <p class="mono mb-2 text-[10px] uppercase tracking-widest text-amber">{L.laneBLabel}</p>
+          <div class="-mx-2 overflow-x-auto px-2">
+            <div class="flex min-w-max items-center gap-1">
+              {
+                L.laneB.map((node, i) => (
+                  <>
+                    <span class="mono rounded border border-amber bg-surface-2 px-3 py-2 text-xs font-medium uppercase tracking-wide text-amber">
+                      {node}
+                    </span>
+                    {i < L.laneB.length - 1 && (
+                      <svg width="30" height="14" viewBox="0 0 30 14" fill="none" aria-hidden="true" class="flex-none">
+                        <line x1="2" y1="7" x2="22" y2="7" stroke="var(--color-amber)" stroke-width="2" class="flow-line" />
+                        <path d="M20 3l6 4-6 4" stroke="var(--color-amber)" stroke-width="2" fill="none" />
+                      </svg>
+                    )}
+                  </>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Convergencia: evaluación contra S_ref -->
+        <div class="rounded border-l-2 border-signal bg-surface-2 px-4 py-3">
+          <p class="mono text-[10px] font-medium uppercase tracking-widest text-signal">
+            ⚖ RMSE · MAE · MSE · NSE — vs S_ref
+          </p>
+          <p class="mt-1 text-sm leading-relaxed text-soft">{L.evalNote}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart: las tres señales -->
+    <div class="reveal scanline mt-10 instrument p-6 shadow-soft">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="font-semibold">{L.chartTitle}</h3>
+        <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
+          {L.illustrativeScale}
+        </span>
+      </div>
+      <canvas id="chart-gt" height="120"></canvas>
+    </div>
+  </div>
+</section>
+
+<script>
+  import Chart from 'chart.js/auto';
+  import { gtTriplet } from '../lib/signals';
+  import { themeColors, onThemeChange } from '../lib/theme';
+
+  const { ref, acq, sm } = gtTriplet(110, 5);
+  const labels = Array.from({ length: ref.length }, (_, i) => i);
+  const el = document.getElementById('chart-gt') as HTMLCanvasElement;
+  const es = document.documentElement.lang === 'es';
+  const txt = {
+    ref: 'S_ref (ground truth)',
+    acq: es ? 'S_acq (adquirida)' : 'S_acq (acquired)',
+    sm: 'S_sm (Whittaker λ=2)',
+    xAxis: es ? 'Tiempo (minutos)' : 'Time (minutes)',
+    yAxis: es ? 'Corriente (A)' : 'Current (A)',
+  };
+  let chart: Chart | null = null;
+
+  function build(animate = true) {
+    const c = themeColors();
+    Chart.defaults.color = c.muted;
+    Chart.defaults.borderColor = c.gridLine;
+    chart?.destroy();
+    chart = new Chart(el, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: txt.acq, data: acq, borderColor: c.amber + '77', borderWidth: 1, pointRadius: 0, tension: 0 },
+          { label: txt.sm, data: sm, borderColor: c.signal, borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
+          { label: txt.ref, data: ref, borderColor: c.ink, borderWidth: 1.8, borderDash: [6, 4], pointRadius: 0, tension: 0.2 },
+        ],
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        animation: animate ? { duration: 1800, easing: 'easeInOutQuart' } : false,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } } },
+        scales: {
+          x: { title: { display: true, text: txt.xAxis }, ticks: { maxTicksLimit: 10 }, grid: { display: false } },
+          y: { title: { display: true, text: txt.yAxis } },
+        },
+      },
+    });
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { build(); io.disconnect(); }
+  }, { threshold: 0.3 });
+  io.observe(el);
+
+  onThemeChange(() => { if (chart) build(false); });
+</script>

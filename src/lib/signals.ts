@@ -64,6 +64,27 @@ export function smooth(y: number[], strength = 5): number[] {
   });
 }
 
+/**
+ * Triplete del pipeline MDPI: S_ref (referencia con escalón de carga real),
+ * S_acq (ref + ruido gaussiano + picos impulsivos) y S_sm (S_acq suavizada).
+ * El escalón y los picos ilustran por qué la mediana preserva carga real
+ * pero elimina ruido impulsivo.
+ */
+export function gtTriplet(n = 110, seed = 5): { ref: number[]; acq: number[]; sm: number[] } {
+  const rnd = mulberry32(seed);
+  const ref: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const step = i > n * 0.45 && i < n * 0.75 ? 6 : 0; // escalón de carga real
+    ref.push(17 + 4.5 * Math.sin(i / 11) + step);
+  }
+  const acq = ref.map((v) => {
+    const g = Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(2 * Math.PI * rnd());
+    const spike = rnd() < 0.06 ? (rnd() - 0.5) * 14 : 0; // ruido impulsivo
+    return v + g * 1.4 + spike;
+  });
+  return { ref, acq, sm: smooth(acq, 5) };
+}
+
 function variance(a: number[]): number {
   const m = a.reduce((x, y) => x + y, 0) / a.length;
   return a.reduce((s, v) => s + (v - m) ** 2, 0) / a.length;
