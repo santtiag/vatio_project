@@ -8,16 +8,16 @@ const objetivos = L.objetivos;
 
 <section id="modelo" class="border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Forecast Engine</p>
-    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-      {L.titlePre}<span class="text-signal glow">LSTM</span>{L.titlePost}
+    <p class="reveal kicker">FIG. 06 · Forecast Engine</p>
+    <h2 class="reveal mt-3 font-serif text-3xl font-medium tracking-tight sm:text-4xl">
+      {L.titlePre}<span class="text-signal">LSTM</span>{L.titlePost}
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted">
       {L.intro}
     </p>
 
     <!-- Figura opcional: arquitectura del modelo LSTM. Suelta el archivo y aparece. -->
-    <figure class="reveal mt-12 overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+    <figure class="reveal mt-12 overflow-hidden rounded border border-line bg-surface shadow-soft">
       <img
         src="/images/lstm-arquitectura.png"
         alt={L.figAlt}
@@ -87,7 +87,7 @@ const objetivos = L.objetivos;
       </p>
     </div>
 
-    <div class="reveal scanline mt-10 instrument p-6 shadow-soft">
+    <div class="reveal mt-10 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h3 class="font-semibold">{L.chartTitle}</h3>
         <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
@@ -120,6 +120,8 @@ const objetivos = L.objetivos;
     const c = themeColors();
     Chart.defaults.color = c.muted;
     Chart.defaults.borderColor = c.gridLine;
+    Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+    Chart.defaults.font.size = 11;
     chart?.destroy();
     chart = new Chart(el, {
       type: 'line',

@@ -7,13 +7,13 @@ export function themeColors() {
   const dark = document.documentElement.classList.contains('dark');
   return {
     dark,
-    signal: v('--color-signal', '#0d8f5b'),
-    amber: v('--color-amber', '#a85d12'),
-    graphite: v('--color-graphite', '#2b3340'),
-    muted: v('--color-muted', '#5c6470'),
-    ink: v('--color-ink', '#161a20'),
-    // grilla/ejes de Chart.js, tenue
-    gridLine: dark ? 'rgba(58,70,84,0.4)' : 'rgba(43,51,64,0.12)',
+    signal: v('--color-signal', '#2240c4'),
+    amber: v('--color-amber', '#a8593c'),
+    graphite: v('--color-graphite', '#2a2d33'),
+    muted: v('--color-muted', '#6b6e76'),
+    ink: v('--color-ink', '#141519'),
+    // grilla/ejes de Chart.js, hairline
+    gridLine: dark ? 'rgba(236,235,228,0.07)' : 'rgba(20,21,25,0.08)',
   };
 }
 

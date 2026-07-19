@@ -25,8 +25,8 @@ const { title = L.title } = Astro.props;
   </head>
   <body class="antialiased">
     <header class="sticky top-0 z-50 border-b border-line bg-canvas">
-      <!-- Barrido de progreso de lectura, estilo sweep de osciloscopio -->
-      <div id="scroll-progress" class="absolute -bottom-px left-0 h-0.5 w-0 bg-signal" style="filter: drop-shadow(var(--glow-signal))"></div>
+      <!-- Barra de progreso de lectura, hairline -->
+      <div id="scroll-progress" class="absolute -bottom-px left-0 h-px w-0 bg-signal"></div>
       <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-6" aria-label="Main">
         <a href="#top" class="mono flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:text-signal">
           <span class="pulse-dot h-2 w-2 rounded-full bg-signal"></span>

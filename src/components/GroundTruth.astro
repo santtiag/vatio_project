@@ -8,8 +8,8 @@ const signals = L.signals.map((s, i) => ({ ...s, tone: tone[i] }));
 
 <section id="groundtruth" class="relative border-b border-line bg-canvas">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Reference Signal</p>
-    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{L.h2}</h2>
+    <p class="reveal kicker">FIG. 04 · Reference Signal</p>
+    <h2 class="reveal mt-3 font-serif text-3xl font-medium tracking-tight sm:text-4xl">{L.h2}</h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted" set:html={L.intro} />
 
     <!-- Tres señales del pipeline -->
@@ -94,7 +94,7 @@ const signals = L.signals.map((s, i) => ({ ...s, tone: tone[i] }));
     </div>
 
     <!-- Chart: las tres señales -->
-    <div class="reveal scanline mt-10 instrument p-6 shadow-soft">
+    <div class="reveal mt-10 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h3 class="font-semibold">{L.chartTitle}</h3>
         <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
@@ -128,6 +128,8 @@ const signals = L.signals.map((s, i) => ({ ...s, tone: tone[i] }));
     const c = themeColors();
     Chart.defaults.color = c.muted;
     Chart.defaults.borderColor = c.gridLine;
+    Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+    Chart.defaults.font.size = 11;
     chart?.destroy();
     chart = new Chart(el, {
       type: 'line',
@@ -135,7 +137,7 @@ const signals = L.signals.map((s, i) => ({ ...s, tone: tone[i] }));
         labels,
         datasets: [
           { label: txt.acq, data: acq, borderColor: c.amber + '77', borderWidth: 1, pointRadius: 0, tension: 0 },
-          { label: txt.sm, data: sm, borderColor: c.signal, borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
+          { label: txt.sm, data: sm, borderColor: c.signal, borderWidth: 2, pointRadius: 0, tension: 0.3 },
           { label: txt.ref, data: ref, borderColor: c.ink, borderWidth: 1.8, borderDash: [6, 4], pointRadius: 0, tension: 0.2 },
         ],
       },

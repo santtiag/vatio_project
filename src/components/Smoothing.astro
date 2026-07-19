@@ -44,8 +44,8 @@ const algos = L.algos.map((a, i) => ({
 
 <section id="suavizado" class="relative border-b border-line bg-canvas-2">
   <div class="mx-auto max-w-6xl px-6 py-24">
-    <p class="reveal kicker">Signal Conditioning</p>
-    <h2 class="reveal mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+    <p class="reveal kicker">FIG. 05 · Signal Conditioning</p>
+    <h2 class="reveal mt-3 font-serif text-3xl font-medium tracking-tight sm:text-4xl">
       {L.h2}
     </h2>
     <p class="reveal mt-4 max-w-3xl text-lg text-muted" set:html={L.intro} />
@@ -89,7 +89,7 @@ const algos = L.algos.map((a, i) => ({
       }
     </div>
 
-    <div class="reveal scanline mt-14 instrument p-6 shadow-soft">
+    <div class="reveal mt-14 instrument p-6 shadow-soft">
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h3 class="font-semibold">{L.chartTitle}</h3>
         <span class="mono rounded border border-line bg-surface-2 px-2 py-0.5 text-[11px] uppercase tracking-wider text-muted">
@@ -127,6 +127,8 @@ const algos = L.algos.map((a, i) => ({
     const c = themeColors();
     Chart.defaults.color = c.muted;
     Chart.defaults.borderColor = c.gridLine;
+    Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+    Chart.defaults.font.size = 11;
     chart?.destroy();
     chart = new Chart(el, {
       type: 'line',
@@ -136,7 +138,7 @@ const algos = L.algos.map((a, i) => ({
           { label: txt.raw, data: raw, borderColor: c.amber + '88', borderWidth: 1, pointRadius: 0, tension: 0 },
           { label: 'Kalman', data: kal, borderColor: c.muted, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
           { label: 'Savitzky-Golay', data: sav, borderColor: c.amber, borderWidth: 1.5, pointRadius: 0, tension: 0.2 },
-          { label: txt.whittaker, data: whit, borderColor: c.signal, borderWidth: 3, pointRadius: 0, tension: 0.3 },
+          { label: txt.whittaker, data: whit, borderColor: c.signal, borderWidth: 2, pointRadius: 0, tension: 0.3 },
         ],
       },
       options: {

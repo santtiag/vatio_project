@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/archivo';
+@import '@fontsource-variable/fraunces/opsz.css';
 @import '@fontsource/ibm-plex-mono/400.css';
 @import '@fontsource/ibm-plex-mono/500.css';
 @import '@fontsource/ibm-plex-mono/600.css';
@@ -8,57 +9,57 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   Vatio — sistema de diseño "instrumento de laboratorio"
-   Acentos con significado de señal:
-     signal (verde fósforo) = señal limpia / suavizada / OK
-     amber                  = señal cruda / ruidosa / aviso
-   Valores en MODO CLARO (papel técnico); .dark hace override.
+   Vatio — sistema de diseño "paper científico moderno"
+   Papel hueso, tinta casi negra, serif en titulares,
+   figuras numeradas y hairlines finos.
+   Acentos con significado de señal (siempre hex #rrggbb,
+   los scripts concatenan alpha):
+     signal (ultramar)  = señal limpia / suavizada / OK
+     amber (terracota)  = señal cruda / ruidosa / aviso
+   Valores en MODO CLARO; .dark hace override ("papel nocturno").
    ============================================================ */
 @theme {
-  --color-signal: #0d8f5b;       /* acento primario */
-  --color-signal-soft: #e2ece4;  /* fondos/chips de acento */
-  --color-amber: #a85d12;        /* acento secundario / cruda */
-  --color-graphite: #2b3340;     /* grid de osciloscopio, ejes */
-  --color-ink: #161a20;          /* texto grafito casi negro */
-  --color-muted: #5c6470;
-  --color-soft: #3c424c;
-  --color-line: #d6d0c2;         /* hairline cálido */
-  --color-canvas: #f3f1ea;       /* papel crema + body */
-  --color-canvas-2: #ebe8dd;     /* secciones alternas */
-  --color-surface: #faf8f2;      /* tarjetas */
-  --color-surface-2: #e7e3d6;    /* insets, chips, bloques de fórmula */
+  --color-signal: #2240c4;       /* acento primario: tinta ultramar */
+  --color-signal-soft: #e8ebf8;  /* fondos/chips de acento */
+  --color-amber: #a8593c;        /* acento secundario / cruda */
+  --color-graphite: #2a2d33;     /* ejes de gráficos */
+  --color-ink: #141519;          /* tinta casi negra */
+  --color-muted: #6b6e76;
+  --color-soft: #3e4149;
+  --color-line: #ddd9cf;         /* hairline de papel */
+  --color-canvas: #f7f5ef;       /* hueso + body */
+  --color-canvas-2: #f0ede5;     /* secciones alternas */
+  --color-surface: #fcfbf7;      /* tarjetas */
+  --color-surface-2: #edeae1;    /* insets, chips, bloques de fórmula */
 
   --font-sans: 'Archivo Variable', system-ui, sans-serif;
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* Sombras planas, neutras (sin tinte de color). */
-  --shadow-soft: 0 1px 0 rgb(22 26 32 / 0.04), 0 1px 3px rgb(22 26 32 / 0.06);
-  --shadow-lift: 0 1px 0 rgb(22 26 32 / 0.05), 0 12px 28px rgb(22 26 32 / 0.12);
-  --radius-card: 0.5rem;
-
-  /* Glow de fósforo — casi nulo en claro. */
-  --glow-signal: 0 0 0 rgb(13 143 91 / 0);
+  --shadow-soft: 0 1px 0 rgb(20 21 25 / 0.04), 0 1px 3px rgb(20 21 25 / 0.06);
+  --shadow-lift: 0 1px 0 rgb(20 21 25 / 0.05), 0 8px 20px rgb(20 21 25 / 0.08);
+  --radius-card: 0.125rem;
 }
 
 :root { color-scheme: light; }
 .dark {
   color-scheme: dark;
-  --color-signal: #34e29b;
-  --color-signal-soft: #0f231b;
-  --color-amber: #f5b13f;
-  --color-graphite: #3a4654;
-  --color-ink: #e7eadf;          /* off-white de pantalla de fósforo */
-  --color-muted: #8b94a0;
-  --color-soft: #c4ccd4;
-  --color-line: #232b33;
-  --color-canvas: #090c0f;       /* near-black frío */
-  --color-canvas-2: #0c1014;
-  --color-surface: #11161b;
-  --color-surface-2: #1a2027;
+  --color-signal: #8fa2ee;
+  --color-signal-soft: #1a2138;
+  --color-amber: #cf8a68;
+  --color-graphite: #3a3d45;
+  --color-ink: #ecebe4;          /* off-white cálido */
+  --color-muted: #8f929b;
+  --color-soft: #c5c8ce;
+  --color-line: #26282e;
+  --color-canvas: #0f1013;       /* papel nocturno */
+  --color-canvas-2: #121316;
+  --color-surface: #16171b;
+  --color-surface-2: #1e2025;
 
   --shadow-soft: 0 0 0 1px rgb(0 0 0 / 0), 0 2px 6px rgb(0 0 0 / 0.4);
-  --shadow-lift: 0 0 0 1px rgb(52 226 155 / 0.06), 0 16px 36px rgb(0 0 0 / 0.55);
-  --glow-signal: 0 0 12px rgb(52 226 155 / 0.55);
+  --shadow-lift: 0 0 0 1px rgb(255 255 255 / 0.04), 0 12px 28px rgb(0 0 0 / 0.5);
 }
 
 html {
@@ -78,7 +79,7 @@ body {
 .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 .mono { font-family: var(--font-mono); }
 
-/* ---- Eyebrow / kicker: etiqueta de canal de instrumento ---- */
+/* ---- Eyebrow / kicker: rótulo de figura ("FIG. 01 · …") ---- */
 .kicker {
   display: inline-flex;
   align-items: center;
@@ -91,104 +92,38 @@ body {
   color: var(--color-signal);
 }
 .kicker::before {
-  content: '◆';
-  font-size: 0.55rem;
-  line-height: 1;
-  color: var(--color-signal);
-  filter: drop-shadow(var(--glow-signal));
-}
-
-/* ---- Acento de señal: texto en verde fósforo con glow ---- */
-.text-signal { color: var(--color-signal); }
-.glow { filter: drop-shadow(var(--glow-signal)); }
-
-/* ---- Rejilla de osciloscopio (reemplaza bg-grid + blobs) ---- */
-.graticule {
-  background-color: transparent;
-  background-image:
-    /* líneas mayores cada 200px */
-    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.16) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.16) 1px, transparent 1px),
-    /* líneas finas cada 40px */
-    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.07) 1px, transparent 1px);
-  background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
-}
-.dark .graticule {
-  background-image:
-    linear-gradient(to right, rgb(from var(--color-signal) r g b / 0.10) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(from var(--color-signal) r g b / 0.10) 1px, transparent 1px),
-    linear-gradient(to right, rgb(from var(--color-graphite) r g b / 0.45) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(from var(--color-graphite) r g b / 0.45) 1px, transparent 1px);
-}
-
-/* ---- Pantalla de instrumento: graticule + viñeteado ---- */
-.screen {
-  position: relative;
-  background:
-    radial-gradient(ellipse 120% 100% at 50% 0%, transparent 55%, rgb(0 0 0 / 0.04) 100%),
-    var(--color-surface);
-}
-.dark .screen {
-  background:
-    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.5) 100%),
-    #060809;
-}
-
-/* ---- Scanlines CRT, muy sutil, sólo oscuro ---- */
-.scanline::after {
   content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: transparent;
-}
-.dark .scanline::after {
-  background: repeating-linear-gradient(
-    to bottom,
-    rgb(52 226 155 / 0.04) 0px,
-    rgb(52 226 155 / 0.04) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
 }
 
-/* ---- Marco de tarjeta tipo módulo de instrumento ---- */
+/* ---- Acento de señal ---- */
+.text-signal { color: var(--color-signal); }
+
+/* ---- Marco de figura: hairline sobre papel ---- */
 .instrument {
-  position: relative;
   border: 1px solid var(--color-line);
   background: var(--color-surface);
   border-radius: var(--radius-card);
 }
-/* tick de esquina decorativo */
-.instrument::before {
-  content: '';
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 0.3rem;
-  height: 0.3rem;
-  border-top: 1px solid var(--color-line);
-  border-right: 1px solid var(--color-line);
-  opacity: 0.7;
-}
 
-/* ---- Punto de estado activo, pulsante (verde señal) ---- */
+/* ---- Punto de estado activo, pulsante ---- */
 @keyframes pulse-dot {
-  0%   { box-shadow: 0 0 0 0 rgb(from var(--color-signal) r g b / 0.5); }
-  70%  { box-shadow: 0 0 0 8px rgb(from var(--color-signal) r g b / 0); }
+  0%   { box-shadow: 0 0 0 0 rgb(from var(--color-signal) r g b / 0.3); }
+  70%  { box-shadow: 0 0 0 6px rgb(from var(--color-signal) r g b / 0); }
   100% { box-shadow: 0 0 0 0 rgb(from var(--color-signal) r g b / 0); }
 }
 .pulse-dot { animation: pulse-dot 2s infinite; }
 
 /* ---- Flujo de datos en el diagrama de arquitectura ---- */
 @keyframes flow { to { stroke-dashoffset: -16; } }
-.flow-line { stroke-dasharray: 6 6; animation: flow 1s linear infinite; }
+.flow-line { stroke-dasharray: 6 6; animation: flow 1.6s linear infinite; }
 
 /* ---- Reveal al hacer scroll ---- */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(14px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--reveal-delay, 0ms);
@@ -208,7 +143,7 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .card-lift:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-lift);
   border-color: var(--color-signal);
 }

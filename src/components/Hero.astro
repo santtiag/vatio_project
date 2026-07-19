@@ -10,25 +10,23 @@ const metrics = [
 ---
 
 <section class="relative overflow-hidden border-b border-line bg-canvas">
-  <div class="graticule absolute inset-0"></div>
-
   <div class="relative mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28">
-    <!-- Barra de estado tipo instrumento -->
+    <!-- Línea de datos de la cabecera, estilo ficha técnica -->
     <div class="reveal mono flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-widest text-muted">
       <span class="inline-flex items-center gap-1.5 text-signal">
         <span class="pulse-dot h-2 w-2 rounded-full bg-signal"></span> REC
       </span>
       <span aria-hidden="true" class="text-line">│</span>
-      <span>CH1 · VOLTAGE</span>
+      <span>VOLTAGE SERIES</span>
       <span aria-hidden="true" class="text-line">│</span>
       <span>{L.statusOrg}</span>
       <span aria-hidden="true" class="text-line">│</span>
       <span>{L.statusKind}</span>
     </div>
 
-    <h1 class="reveal mt-6 max-w-4xl text-4xl font-bold leading-[1.02] tracking-tight text-ink sm:text-6xl">
+    <h1 class="reveal mt-6 max-w-4xl font-serif text-4xl font-medium leading-[1.05] tracking-tight text-ink sm:text-6xl">
       {L.title1}
-      <span class="text-signal glow">{L.titleAccent}</span>
+      <span class="text-signal">{L.titleAccent}</span>
     </h1>
 
     <p class="reveal mono mt-4 max-w-2xl text-sm uppercase tracking-wider text-muted">
@@ -46,18 +44,19 @@ const metrics = [
       </a>
     </div>
 
-    <!-- Pantalla del osciloscopio -->
-    <div class="reveal scanline mt-12 overflow-hidden rounded-lg border border-line shadow-lift">
+    <!-- Figura 01: la señal -->
+    <div class="reveal mt-12 overflow-hidden rounded border border-line shadow-soft">
       <div class="mono flex items-center justify-between border-b border-line bg-surface px-4 py-2 text-[11px] uppercase tracking-wider text-muted">
         <span class="flex items-center gap-2">
+          <span class="text-ink">FIG. 01</span>
+          <span aria-hidden="true" class="text-line">│</span>
           <span class="text-amber">RAW</span>
           <span aria-hidden="true">→</span>
           <span class="text-signal">SMOOTHED · WHITTAKER λ=2</span>
         </span>
         <span class="rounded border border-line px-2 py-0.5">{L.scopeBadge}</span>
       </div>
-      <div class="screen relative">
-        <div class="graticule absolute inset-0"></div>
+      <div class="relative bg-surface">
         <canvas id="hero-wave" class="relative block w-full" height="220"></canvas>
       </div>
     </div>
@@ -67,7 +66,7 @@ const metrics = [
       {
         metrics.map((m, i) => (
           <div class="reveal bg-surface p-5">
-            <dt class="mono tnum text-3xl font-medium tracking-tight text-signal sm:text-4xl">
+            <dt class="mono tnum text-3xl font-medium tracking-tight text-ink sm:text-4xl">
               <span
                 data-count={m.value}
                 data-prefix={m.prefix}
@@ -96,7 +95,7 @@ const metrics = [
   const max = Math.max(...raw) + 2;
 
   // Colores leídos del tema (CSS vars) — se actualizan al alternar tema.
-  let css = { signal: '#34e29b', amber: '#f5b13f', graphite: '#3a4654', dark: true };
+  let css = { signal: '#2240c4', amber: '#a8593c', graphite: '#2a2d33', dark: false };
   function readTheme() {
     const s = getComputedStyle(document.documentElement);
     css = {
@@ -118,7 +117,7 @@ const metrics = [
   resize();
   window.addEventListener('resize', resize);
 
-  function draw(series: number[], color: string, width: number, glow = 0) {
+  function draw(series: number[], color: string, width: number) {
     const w = canvas.clientWidth;
     const h = 220;
     ctx.beginPath();
@@ -127,25 +126,22 @@ const metrics = [
       const y = h - ((v - min) / (max - min)) * (h - 24) - 12;
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
-    ctx.shadowBlur = glow;
-    ctx.shadowColor = color;
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
     ctx.lineJoin = 'round';
     ctx.stroke();
-    ctx.shadowBlur = 0;
   }
 
   let t = 0; // 0 = cruda, 1 = suavizada (oscila)
   function frame() {
     const w = canvas.clientWidth;
     ctx.clearRect(0, 0, w, 220);
-    // rastro tenue de la señal cruda (ámbar tenue)
-    draw(raw, css.amber + '55', 1);
+    // rastro tenue de la señal cruda (terracota fantasma)
+    draw(raw, css.amber + '40', 1);
     const morphed = raw.map((v, i) => v + (clean[i] - v) * t);
     const clean50 = t > 0.5;
     const color = clean50 ? css.signal : css.amber;
-    draw(morphed, color, 2.6, clean50 && css.dark ? 14 : 0);
+    draw(morphed, color, 1.5);
     t += 0.006;
     if (t > 1) t = 0;
     requestAnimationFrame(frame);
