@@ -1,5 +1,6 @@
 ---
 import { t } from '../i18n';
+import InteractiveFigure from './InteractiveFigure.astro';
 const L = t(Astro.currentLocale).lstm;
 const layers = ['Input', 'LSTM 1', 'Dropout 1', 'LSTM 2', 'Dropout 2', 'Dense 1', 'Dense Output'];
 const features = L.featureNames.map((n, i) => ({ n, u: L.featureUnits[i] }));
@@ -16,19 +17,21 @@ const objetivos = L.objetivos;
       {L.intro}
     </p>
 
-    <!-- Figura opcional: arquitectura del modelo LSTM. Suelta el archivo y aparece. -->
-    <figure class="reveal mt-12 overflow-hidden rounded border border-line bg-surface shadow-soft">
-      <img
-        src="/images/lstm-arquitectura.png"
-        alt={L.figAlt}
-        class="block w-full"
-        loading="lazy"
-        onerror="this.closest('figure').remove()"
-      />
-      <figcaption class="border-t border-line px-4 py-3 text-sm text-muted">
-        {L.figCaption}
-      </figcaption>
-    </figure>
+    <!-- Arquitectura del modelo LSTM: vista previa acotada + visor con zoom/pan.
+         La imagen es vertical (2200×3703), por eso ya no va a ancho completo. -->
+    <InteractiveFigure
+      src="/images/lstm-arquitectura.png"
+      alt={L.figAlt}
+      caption={L.figCaption}
+      hint={L.figHint}
+      expandLabel={L.figExpand}
+      zoomInLabel={L.figZoomIn}
+      zoomOutLabel={L.figZoomOut}
+      resetLabel={L.figReset}
+      closeLabel={L.figClose}
+      width={2200}
+      height={3703}
+    />
 
     <div class="reveal mt-12">
       <p class="mono mb-3 text-[11px] uppercase tracking-widest text-muted">{L.archLabel}</p>

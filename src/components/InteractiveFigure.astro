@@ -1,0 +1,338 @@
+---
+// Figura con visor interactivo: vista previa acotada en altura (las imágenes
+// verticales ya no dominan la página) y un diálogo a pantalla completa con
+// zoom (rueda / pellizco / botones / teclado), desplazamiento por arrastre y
+// doble clic para alternar. Reutilizable: basta pasar src/alt/caption y las
+// etiquetas ya traducidas desde i18n.
+interface Props {
+  src: string;
+  alt: string;
+  caption: string;
+  hint: string;
+  expandLabel: string;
+  zoomInLabel: string;
+  zoomOutLabel: string;
+  resetLabel: string;
+  closeLabel: string;
+  width?: number;
+  height?: number;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  hint,
+  expandLabel,
+  zoomInLabel,
+  zoomOutLabel,
+  resetLabel,
+  closeLabel,
+  width,
+  height,
+} = Astro.props;
+---
+
+<figure
+  data-interactive-figure
+  class="reveal mt-12 overflow-hidden rounded border border-line bg-surface shadow-soft"
+>
+  <div class="bg-surface-2/50 px-4 py-6 sm:px-8">
+    <button
+      type="button"
+      data-open
+      aria-haspopup="dialog"
+      aria-label={expandLabel}
+      class="group relative mx-auto block cursor-zoom-in rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+    >
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        class="mx-auto block h-auto max-h-[420px] w-auto max-w-full bg-white object-contain shadow-soft transition duration-300 group-hover:scale-[1.015] sm:max-h-[560px]"
+        onerror="this.closest('[data-interactive-figure]')?.remove()"
+      />
+      <span
+        class="mono absolute right-2 top-2 inline-flex items-center gap-1.5 rounded border border-line bg-surface/95 px-2 py-1 text-[10px] font-medium uppercase tracking-widest text-muted shadow-soft transition group-hover:border-signal group-hover:text-signal"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+        </svg>
+        {expandLabel}
+      </span>
+    </button>
+  </div>
+  <figcaption class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-line px-4 py-3 text-sm text-muted">
+    <span>{caption}</span>
+    <span class="mono text-[11px] uppercase tracking-wider text-signal/80">{hint}</span>
+  </figcaption>
+
+  <div
+    data-dialog
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-label={alt}
+    class="fixed inset-0 z-[100]"
+  >
+    <div class="absolute inset-0 bg-black/85 backdrop-blur-sm" aria-hidden="true"></div>
+    <div class="absolute inset-0 flex flex-col">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 px-4 py-3 sm:px-6">
+        <p class="mono max-w-[50vw] truncate text-[11px] uppercase tracking-widest text-white/70">{caption}</p>
+        <div class="flex items-center gap-1.5">
+          <span data-zoom-level class="mono tnum mr-1 text-xs text-white/80" aria-live="polite">100%</span>
+          <button type="button" data-zoom-out aria-label={zoomOutLabel} title={zoomOutLabel} class="dlg-btn text-lg leading-none">−</button>
+          <button type="button" data-zoom-in aria-label={zoomInLabel} title={zoomInLabel} class="dlg-btn text-lg leading-none">+</button>
+          <button type="button" data-reset aria-label={resetLabel} title={resetLabel} class="dlg-btn">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 2.6-6.3L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+          <button type="button" data-close aria-label={closeLabel} title={closeLabel} class="dlg-btn text-lg leading-none">×</button>
+        </div>
+      </div>
+      <div data-viewport class="relative flex-1 cursor-grab touch-none overflow-hidden active:cursor-grabbing">
+        <img
+          data-zoom-img
+          src={src}
+          alt={alt}
+          draggable="false"
+          class="absolute left-1/2 top-1/2 block h-auto max-h-full w-auto max-w-full select-none bg-white"
+          onerror="this.closest('[data-interactive-figure]')?.remove()"
+        />
+      </div>
+      <p class="mono px-4 py-2.5 text-center text-[11px] uppercase tracking-widest text-white/60">{hint}</p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  [data-dialog] { display: none; }
+  [data-dialog].is-open { display: block; }
+  [data-zoom-img] {
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease-out;
+    will-change: transform;
+  }
+  .dlg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    background: rgb(255 255 255 / 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .dlg-btn:hover { background: rgb(255 255 255 / 0.2); border-color: rgb(255 255 255 / 0.5); }
+  .dlg-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    [data-zoom-img] { transition: none; }
+  }
+</style>
+
+<script>
+  // Visor de zoom/pan para cada [data-interactive-figure] de la página.
+  type Pt = { id: number; x: number; y: number };
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-interactive-figure]').forEach((root) => {
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-open]');
+    const dialog = root.querySelector<HTMLElement>('[data-dialog]');
+    const viewport = root.querySelector<HTMLElement>('[data-viewport]');
+    const img = root.querySelector<HTMLImageElement>('[data-zoom-img]');
+    const level = root.querySelector<HTMLElement>('[data-zoom-level]');
+    const closeBtn = root.querySelector<HTMLButtonElement>('[data-close]');
+    const zoomInBtn = root.querySelector<HTMLButtonElement>('[data-zoom-in]');
+    const zoomOutBtn = root.querySelector<HTMLButtonElement>('[data-zoom-out]');
+    const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]');
+    if (!openBtn || !dialog || !viewport || !img || !level || !closeBtn) return;
+
+    const MIN = 1;
+    const MAX = 4;
+    let scale = 1;
+    let tx = 0;
+    let ty = 0;
+    let lastFocus: HTMLElement | null = null;
+    const pointers = new Map<number, Pt>();
+    let lastPointer: Pt | null = null;
+    let pinchDist = 0;
+    let pinchScale = 1;
+    let pinchTx = 0;
+    let pinchTy = 0;
+    let pinchMid = { x: 0, y: 0 };
+
+    const isOpen = () => dialog.classList.contains('is-open');
+
+    function clampPan() {
+      const mx = Math.max(0, (img.offsetWidth * scale - viewport.clientWidth) / 2);
+      const my = Math.max(0, (img.offsetHeight * scale - viewport.clientHeight) / 2);
+      tx = clamp(tx, -mx, mx);
+      ty = clamp(ty, -my, my);
+    }
+
+    function render(animate = true) {
+      clampPan();
+      img.style.transition = animate && !reducedMotion ? '' : 'none';
+      img.style.transform = `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${scale})`;
+      level.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    // Zoom manteniendo fijo el punto (cx, cy) medido desde el centro del viewport.
+    function zoomAt(next: number, cx: number, cy: number) {
+      const s = clamp(next, MIN, MAX);
+      if (s === scale) return render();
+      const ratio = s / scale;
+      tx = cx - (cx - tx) * ratio;
+      ty = cy - (cy - ty) * ratio;
+      scale = s;
+      render();
+    }
+
+    const offsetFromCenter = (clientX: number, clientY: number) => {
+      const r = viewport.getBoundingClientRect();
+      return { x: clientX - (r.left + r.width / 2), y: clientY - (r.top + r.height / 2) };
+    };
+
+    function open() {
+      lastFocus = document.activeElement as HTMLElement | null;
+      dialog.classList.add('is-open');
+      dialog.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+      scale = 1;
+      tx = 0;
+      ty = 0;
+      render(false);
+      closeBtn.focus();
+    }
+
+    function close() {
+      dialog.classList.remove('is-open');
+      dialog.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+      pointers.clear();
+      lastPointer = null;
+      pinchDist = 0;
+      lastFocus?.focus();
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    zoomInBtn?.addEventListener('click', () => zoomAt(scale * 1.25, 0, 0));
+    zoomOutBtn?.addEventListener('click', () => zoomAt(scale / 1.25, 0, 0));
+    resetBtn?.addEventListener('click', () => {
+      scale = 1;
+      tx = 0;
+      ty = 0;
+      render();
+    });
+
+    viewport.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        const { x, y } = offsetFromCenter(e.clientX, e.clientY);
+        zoomAt(scale * Math.exp(-e.deltaY * 0.0015), x, y);
+      },
+      { passive: false },
+    );
+
+    viewport.addEventListener('pointerdown', (e) => {
+      pointers.set(e.pointerId, { id: e.pointerId, x: e.clientX, y: e.clientY });
+      lastPointer = { id: e.pointerId, x: e.clientX, y: e.clientY };
+      try {
+        viewport.setPointerCapture(e.pointerId);
+      } catch {
+        /* puntero ya liberado */
+      }
+      img.style.transition = 'none';
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+        pinchScale = scale;
+        pinchTx = tx;
+        pinchTy = ty;
+        pinchMid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      }
+    });
+
+    viewport.addEventListener('pointermove', (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, { id: e.pointerId, x: e.clientX, y: e.clientY });
+      if (pointers.size === 1 && lastPointer) {
+        tx += e.clientX - lastPointer.x;
+        ty += e.clientY - lastPointer.y;
+        lastPointer = { id: e.pointerId, x: e.clientX, y: e.clientY };
+        render(false);
+      } else if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        if (pinchDist > 0) {
+          const target = clamp(pinchScale * (dist / pinchDist), MIN, MAX);
+          const { x: mx, y: my } = offsetFromCenter(mid.x, mid.y);
+          const ratio = target / pinchScale;
+          tx = mx - (mx - pinchTx) * ratio + (mid.x - pinchMid.x);
+          ty = my - (my - pinchTy) * ratio + (mid.y - pinchMid.y);
+          scale = target;
+          render(false);
+        }
+      }
+    });
+
+    const endPointer = (e: PointerEvent) => {
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchDist = 0;
+      const remaining = [...pointers.values()][0];
+      lastPointer = remaining ? { ...remaining } : null;
+    };
+    viewport.addEventListener('pointerup', endPointer);
+    viewport.addEventListener('pointercancel', endPointer);
+
+    viewport.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      const { x, y } = offsetFromCenter(e.clientX, e.clientY);
+      zoomAt(scale > 1.01 ? 1 : 2.5, x, y);
+    });
+
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+      } else if (e.key === '+' || e.key === '=') {
+        zoomAt(scale * 1.25, 0, 0);
+      } else if (e.key === '-') {
+        zoomAt(scale / 1.25, 0, 0);
+      } else if (e.key === '0') {
+        scale = 1;
+        tx = 0;
+        ty = 0;
+        render();
+      } else if (e.key === 'Tab') {
+        // Trampa de foco simple: el Tab circula entre los controles del visor.
+        const focusables = [...dialog.querySelectorAll<HTMLElement>('button')];
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    addEventListener('resize', () => {
+      if (isOpen()) render(false);
+    });
+  });
+</script>
